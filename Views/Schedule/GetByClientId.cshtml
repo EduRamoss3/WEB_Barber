@@ -1,0 +1,22 @@
+﻿@using Barber.UI.Entities
+@model List<SchedulesDTO>
+
+<div class="container bg-black">
+@if(Model.Count == 0)
+{
+    <h1>Sem agendamentos para este cliente!</h1>
+}
+else
+{
+    @foreach(var item in Model)
+    {
+        <h1>ID Client: @item.IdClient</h1>
+        <p> ID Schedule: @item.Id</p>
+        <p> ID Barber: @item.IdBarber</p>
+        <p> IsFinalized @item.IsFinalized</p>
+        <p> TypeOfService: @item.TypeOfService</p>
+        <p> @item.DateSchedule.ToString("dd/MM/yyyy HH:mm")</p>
+
+    }
+}
+</div>
