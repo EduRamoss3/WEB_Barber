@@ -10,6 +10,7 @@ builder.Services.AddHttpClient("API_Barber", c =>
     c.BaseAddress = new Uri(builder.Configuration["ServicesUri:API_Barber"]);
 });
 builder.Services.AddScoped<IScheduleServices,SchedulesService>();   
+builder.Services.AddTransient<IAuthenticate, Authenticate>();
 
 
 var app = builder.Build();

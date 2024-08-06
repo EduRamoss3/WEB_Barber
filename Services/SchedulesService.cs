@@ -13,6 +13,7 @@ namespace Barber.UI.Services
         private const string apiEndPoint = "/api/Schedules/";
         private readonly JsonSerializerOptions _options;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly HttpClient client;
 
         public SchedulesService(IHttpClientFactory httpClientFactory)
         {
@@ -26,11 +27,16 @@ namespace Barber.UI.Services
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             _httpClientFactory = httpClientFactory;
+            client = _httpClientFactory.CreateClient("API_Barber");
+        }
+
+        public Task<HttpStatusCode> AddAsync(SchedulesDTO scheduleDTO)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> EndOrOpenServiceByIdAsync(int id, bool endOrOpen)
         {
-            var client = _httpClientFactory.CreateClient("API_Barber");
             var item = JsonSerializer.Serialize(endOrOpen);
             StringContent content = new StringContent(item, Encoding.UTF8, "application/json");
 
@@ -49,9 +55,18 @@ namespace Barber.UI.Services
             return true;
         }
 
+        public Task<HttpStatusCode> EndServiceAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SchedulesDTO>> GetAllAsync(ParametersToPagination parameters)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<SchedulesDTO>> GetByBarberIdAsync(int barberId)
         {
-            var client = _httpClientFactory.CreateClient("API_Barber");
             var parameterId = JsonSerializer.Serialize(barberId);
             using (var response = await client.GetAsync(apiEndPoint + "barber/" + parameterId))
             {
@@ -68,9 +83,14 @@ namespace Barber.UI.Services
             }
 
         }
+
+        public Task<List<SchedulesDTO>> GetByBarberIdAsync(int? barberId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<SchedulesDTO>> GetByClientIdAsync(int clientId)
         {
-            var client = _httpClientFactory.CreateClient("API_Barber");
             using (var response = await client.GetAsync(apiEndPoint + $"client/{clientId}"))
             {
                 if (response.IsSuccessStatusCode)
@@ -87,9 +107,18 @@ namespace Barber.UI.Services
             }
         }
 
-        public async Task<List<DateTime>> GetIndisponibleDatesByBarberId(int barberId, DateTime dateSearch)
+        public Task<List<SchedulesDTO>> GetByClientIdAsync(int? clientId)
         {
-            var client = _httpClientFactory.CreateClient("API_Barber");
+            throw new NotImplementedException();
+        }
+
+        public Task<SchedulesDTO> GetByIdAsync(int? id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<DateTime>> GetByDateDisponible(int barberId, DateTime dateSearch)
+        {
             var parameterId = JsonSerializer.Serialize(barberId);
             var parameterDate = JsonSerializer.Serialize(dateSearch);
             using (var response = await client.GetAsync(apiEndPoint + $"barbers/{parameterId}/availability/{parameterDate}"))
@@ -108,29 +137,24 @@ namespace Barber.UI.Services
             }
         }
 
-        public async Task<DisponibleDateViewModel> IsDisponibleInThisDate(int barberId, DateTime dateTime)
+       
+
+        public Task<HttpStatusCode> OpenServiceAsync(int id)
         {
-
-            var client = _httpClientFactory.CreateClient("API_Barber");
-            var parameterId = JsonSerializer.Serialize(barberId);
-            var parameterDate = JsonSerializer.Serialize(dateTime);
-            using (var response = await client.GetAsync(apiEndPoint + $"barbers/{parameterId}/availability/{parameterDate}"))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var apiResponse = await response.Content.ReadAsStreamAsync();
-                    var itemSerialized = await JsonSerializer.DeserializeAsync<bool>(apiResponse, _options);
-                    DisponibleDateViewModel model = new DisponibleDateViewModel(itemSerialized, barberId);
-                    return model;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
+            throw new NotImplementedException();
         }
-        public async Task<HttpStatusCode> UpdateValueFor(int id, decimal valueForService)
+
+        public Task<HttpStatusCode> RemoveAsync(int? id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<HttpStatusCode> UpdateAsync(SchedulesDTO scheduleDTO, int? id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<HttpStatusCode> UpdateValueForAsync(int id, decimal valueForService)
         {
             var client = _httpClientFactory.CreateClient("API_Barber");
 
