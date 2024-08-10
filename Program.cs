@@ -1,3 +1,5 @@
+using Barber.UI.Entities.Responses;
+using Barber.UI.Entities;
 using Barber.UI.Services;
 using Barber.UI.Services.Interfaces;
 
@@ -9,8 +11,10 @@ builder.Services.AddHttpClient("API_Barber", c =>
 {
     c.BaseAddress = new Uri(builder.Configuration["ServicesUri:API_Barber"]);
 });
+builder.Services.AddScoped<ObjectResponse<SchedulesDTO>>();
 builder.Services.AddScoped<IScheduleServices,SchedulesService>();   
 builder.Services.AddTransient<IAuthenticate, Authenticate>();
+
 
 
 var app = builder.Build();

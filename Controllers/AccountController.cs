@@ -30,7 +30,8 @@ namespace Barber.UI.Controllers
                 {
                     Secure = true,
                     HttpOnly = true,
-                    SameSite = SameSiteMode.Strict
+                    SameSite = SameSiteMode.Strict,
+                    Expires = result.Expiration,
                 });
                 return RedirectToAction("Index", "Home");
             }

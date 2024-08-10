@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Barber.UI.Entities
+namespace Barber.UI.Entities.Responses
 {
     public class SchedulesResponse
     {

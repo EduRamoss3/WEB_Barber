@@ -12,13 +12,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Shared\_LoginPartial.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ContainerEnvironmentVariable Include="ASPNETCORE_HTTPS_PORTS">
       <Value>8081</Value>
     </ContainerEnvironmentVariable>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Http\" />
+    <UpToDateCheckInput Remove="Views\Shared\_LoginPartial.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\_LoginPartial.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Shared\_LoginPartial.cshtml" />
   </ItemGroup>
 
 </Project>

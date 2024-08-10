@@ -1,0 +1,9 @@
+﻿
+@if(TempData["Error"] is not null)
+{
+    <h1 class="text-danger">@TempData["Error"]</h1>
+}
+else
+{
+    <h1 class="text-danger">Ocorreu um erro durante a sua requisição</h1>
+}

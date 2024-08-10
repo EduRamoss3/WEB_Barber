@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Search">Pesquisar agendamentos por cliente</a>
                         </li>
+                        @await Html.PartialAsync("_LoginPartial")
+                        @await Html.PartialAsync("_RegisterPartial")
+
                     </ul>
                 </div>
             </div>
