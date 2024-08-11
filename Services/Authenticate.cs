@@ -13,6 +13,7 @@ namespace Barber.UI.Services
         private readonly JsonSerializerOptions _options;
         private readonly HttpClient _client;
         private TokenViewModel TokenViewModel;
+
         public Authenticate(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -49,8 +50,8 @@ namespace Barber.UI.Services
                     
                     try
                     {
-                        var tokenViewModel = JsonSerializer.Deserialize<TokenViewModel>(responseContent, _options);
-                        return tokenViewModel;
+                        TokenViewModel = JsonSerializer.Deserialize<TokenViewModel>(responseContent, _options);
+                        return TokenViewModel;
                     }
                     catch (Exception)
                     {

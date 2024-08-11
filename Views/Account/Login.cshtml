@@ -1,42 +1,25 @@
 ﻿@model LoginViewModel
 
-<style>
-    .login-container {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .login-form {
-        width: 100%;
-        max-width: 400px;
-        padding: 2rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-</style>
     <div class="login-container">
-        <div class="login-form bg-light">
-            <h1 class="text-center mb-4">Login</h1>
+        <div class="login-form text-dark" > 
+            <h1 class="text-center mb-4">Faça login, marque seu horário.</h1>
             <form class="form-horizontal" asp-controller="Account" asp-action="Login" method="post">
                 <div asp-validation-summary="All" class="alert alert-danger"></div>
-
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label">Email</label>
-                    <input type="email" asp-for="Email" class="form-control" />
+                <input type="email" asp-for="Email" placeholder="email@exemplo.com" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Password</label>
-                    <input type="password" asp-for="Password" class="form-control" />
+                    <label asp-for="Password" class="form-label" >Senha</label>
+                <input type="password" asp-for="Password" placeholder="Digite sua senha" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" asp-for="ConfirmPassword" class="form-control" />
+                    <label asp-for="ConfirmPassword" class="form-label" >Confirme a senha</label>
+                <input type="password" asp-for="ConfirmPassword" placeholder="Digite sua senha novamente" class="form-control" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
 

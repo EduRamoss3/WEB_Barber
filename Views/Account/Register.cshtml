@@ -1,5 +1,51 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model LoginViewModel
+
+<div class="container-body">
+    <aside class="second-side">
+        <div class="text-container">
+            <p class="text-center">
+                <h1 class="text-center">Sobre a Barbearia</h1>
+
+                Na Barbearia Estilo e Tradição, acreditamos que um corte de cabelo é mais do que uma simples mudança de visual—é uma experiência. Desde 1998, temos o orgulho de oferecer aos nossos clientes o melhor em estilo clássico e moderno, combinado com o charme e a hospitalidade de um ambiente acolhedor.
+
+                Nossos barbeiros são especialistas em cortes tradicionais, barbas bem aparadas e cuidados com a pele masculina, sempre atentos às últimas tendências. Queremos que cada visita à nossa barbearia seja um momento de relaxamento, onde você possa se sentir renovado e sair com a confiança de quem sabe que está com o visual em dia.
+
+                Venha tomar um café, bater um papo e, claro, cuidar do seu estilo conosco. Aqui, o seu visual é tratado com respeito e dedicação, porque para nós, cada detalhe importa.
+            </p>
+        </div>
+        <div class="img-container">
+            <img class="img-fluid" src="iconelogo" alt="imagem" />
+        </div>
+    </aside>
+    <section class="first-side">
+        <div class="login-container">
+            <div class="login-form">
+                <h1 class="text-center mb-4 text-dark">Cadastro</h1>
+                <div asp-validation-summary="All" class="alert alert-danger"></div>
+                <form class="form-horizontal text-dark" asp-controller="Account" asp-action="Register" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input type="email" asp-for="Email" class="form-control" placeholder="email@exemplo.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Senha</label>
+                        <input type="password" asp-for="Password" class="form-control" placeholder="Digite sua senha aqui" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ConfirmPassword" class="form-label">Confirme a senha</label>
+                        <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Digite sua senha aqui" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="submit" value="Registre-se" class="btn btn-primary w-100" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+</div>

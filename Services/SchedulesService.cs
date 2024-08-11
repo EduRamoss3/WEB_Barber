@@ -4,6 +4,7 @@ using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -34,13 +35,35 @@ namespace Barber.UI.Services
         {
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
-        public Task<HttpStatusCode> AddAsync(SchedulesDTO scheduleDTO, string token)
+
+        public async Task<HttpStatusCode> AddAsync(SchedulesDTO scheduleDTO, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+            var serializeItem = JsonSerializer.Serialize(scheduleDTO);
+            StringContent content = new(serializeItem, Encoding.UTF8, "application/json");
+
+            using (var response = await client.PostAsync(apiEndPoint + "add", content))
+            {
+                return response.StatusCode;
+            }
+
         }
         public async Task<bool> OpenServiceAsync(int id, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+            var serializeItem = JsonSerializer.Serialize(id);
+            StringContent content = new(serializeItem, Encoding.UTF8, "application/json");
+
+            using (var response = await client.PostAsync(apiEndPoint + "end-service", content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<bool>(apiResponse);
+                    return itemDeserialized;
+                }
+                return false;
+            }
         }
         public async Task<bool> EndServiceAsync(int id, string token)
         {
@@ -55,17 +78,29 @@ namespace Barber.UI.Services
                     var apiResponse = await response.Content.ReadAsStreamAsync();
                     var itemSerialized = await JsonSerializer.DeserializeAsync<bool>(apiResponse, _options);
                 }
-                else
-                {
-                    return false;
-                }
             }
             return true;
         }
 
-        public Task<ObjectResponse<SchedulesDTO>> GetAllAsync(ParametersToPagination parameters, string token)
+        public async Task<ObjectResponse<SchedulesDTO>> GetAllAsync(ParametersToPagination parameters, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+            var item = JsonSerializer.Serialize(parameters);
+
+            using (var response = await client.GetAsync(apiEndPoint + "all" + item))
+            {
+                ObjectResponse<SchedulesDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<List<SchedulesDTO>>(apiResponse, _options);
+                    _objectResponse.Objects = itemDeserialized;
+                }
+                return _objectResponse;
+            }
         }
 
         public async Task<ObjectResponse<SchedulesDTO>> GetByBarberIdAsync(int barberId, string token)
@@ -86,12 +121,25 @@ namespace Barber.UI.Services
                 }
                 return _objectResponse;
             }
-
         }
 
-        public Task<ObjectResponse<SchedulesDTO>> GetByBarberIdAsync(int? barberId, string token)
+        public async Task<ObjectResponse<SchedulesDTO>> GetByBarberIdAsync(int? barberId, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+
+            using (var response = await client.GetAsync(apiEndPoint + "barber/" + barberId.Value))
+            {
+                ObjectResponse<SchedulesDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<List<SchedulesDTO>>(apiResponse, _options);
+                    _objectResponse.Objects = itemDeserialized;
+                }
+                return _objectResponse;
+            }
         }
 
         public async Task<ObjectResponse<SchedulesDTO>> GetByClientIdAsync(int clientId, string token)
@@ -113,9 +161,24 @@ namespace Barber.UI.Services
                 return _objectResponse;
             }
         }
-        public Task<ObjectResponse<SchedulesDTO>> GetByIdAsync(int? id, string token)
+        public async Task<ObjectResponse<SchedulesDTO>> GetByIdAsync(int? id, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+
+            using (var response = await client.GetAsync(apiEndPoint + $"id/{id.Value}"))
+            {
+                ObjectResponse<SchedulesDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var responseObject = await JsonSerializer.DeserializeAsync<SchedulesDTO>(apiResponse, _options);
+                    _objectResponse.OneObject = responseObject;
+                }
+                return _objectResponse;
+            }
         }
 
         public async Task<ObjectResponse<List<DateTime>>> GetByDateDisponible(int barberId, DateTime dateSearch, string token)
@@ -140,14 +203,27 @@ namespace Barber.UI.Services
             }
         }
 
-        public Task<HttpStatusCode> RemoveAsync(int? id, string token)
+        public async Task<HttpStatusCode> RemoveAsync(int? id, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+            var itemSerialized = JsonSerializer.Serialize(id.Value);
+
+            using (var response = await client.DeleteAsync(apiEndPoint + $"{itemSerialized}"))
+            {
+                return response.StatusCode;
+            }
         }
 
-        public Task<HttpStatusCode> UpdateAsync(SchedulesDTO scheduleDTO, int? id, string token)
+        public async Task<HttpStatusCode> UpdateAsync(SchedulesDTO scheduleDTO, int? id, string token)
         {
-            throw new NotImplementedException();
+            PutTokenInHeadersAuthorization(token, client);
+            var itemSerialized = JsonSerializer.Serialize(scheduleDTO);
+            StringContent content = new(itemSerialized, Encoding.UTF8, "application/json");
+
+            using (var response = await client.PutAsync(apiEndPoint + $"{id.Value}", content))
+            {
+                return response.StatusCode;
+            }
         }
 
         public async Task<HttpStatusCode> UpdateValueForAsync(int id, decimal valueForService, string token)

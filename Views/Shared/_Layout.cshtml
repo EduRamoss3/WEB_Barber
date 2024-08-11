@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Barber.UI</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/StyleSheet.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Barber.UI.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -26,16 +27,19 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Search">Pesquisar agendamentos por cliente</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Search">Pesquisa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Schedule" asp-action="Delete">Deletar</a>
                         </li>
                     </ul>
-                    @await Html.PartialAsync("LoginPartial")
-                    @await Html.PartialAsync("RegisterPartial")
+                    @await Html.PartialAsync("_LoginPartial")
+                    @await Html.PartialAsync("_RegisterPartial")
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container bg-light">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

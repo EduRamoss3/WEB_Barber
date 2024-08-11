@@ -1,4 +1,7 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Erro";
+}
+
 @if(TempData["Error"] is not null)
 {
     <h1 class="text-danger">@TempData["Error"]</h1>
