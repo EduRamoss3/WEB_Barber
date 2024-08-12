@@ -16,5 +16,11 @@
                 _pageSize = (value > maxPageSize) ? maxPageSize : value;
             }
         }
+        public ParametersToPagination(int pageSize, int pageNumber)
+        {
+            PageSize = pageSize;    
+            PageNumber = pageNumber;
+        }
+        public ParametersToPagination() { }
     }
 }

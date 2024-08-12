@@ -39,11 +39,13 @@ namespace Barber.UI.Services
         public async Task<HttpStatusCode> AddAsync(SchedulesDTO scheduleDTO, string token)
         {
             PutTokenInHeadersAuthorization(token, client);
-            var serializeItem = JsonSerializer.Serialize(scheduleDTO);
+            var serializeItem = JsonSerializer.Serialize(scheduleDTO,_options);
             StringContent content = new(serializeItem, Encoding.UTF8, "application/json");
 
             using (var response = await client.PostAsync(apiEndPoint + "add", content))
             {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(responseContent);
                 return response.StatusCode;
             }
 
@@ -85,9 +87,8 @@ namespace Barber.UI.Services
         public async Task<ObjectResponse<SchedulesDTO>> GetAllAsync(ParametersToPagination parameters, string token)
         {
             PutTokenInHeadersAuthorization(token, client);
-            var item = JsonSerializer.Serialize(parameters);
 
-            using (var response = await client.GetAsync(apiEndPoint + "all" + item))
+            using (var response = await client.GetAsync(apiEndPoint + $"all?PageNumber={parameters.PageNumber}&PageSize={parameters.PageSize}" ))
             {
                 ObjectResponse<SchedulesDTO> _objectResponse = new();
                 _objectResponse.StatusCode = response.StatusCode;

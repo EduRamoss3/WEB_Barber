@@ -2,6 +2,9 @@ using Barber.UI.Entities.Responses;
 using Barber.UI.Entities;
 using Barber.UI.Services;
 using Barber.UI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,23 @@ builder.Services.AddHttpClient("API_Barber", c =>
 builder.Services.AddScoped<ObjectResponse<SchedulesDTO>>();
 builder.Services.AddScoped<IScheduleServices,SchedulesService>();   
 builder.Services.AddTransient<IAuthenticate, Authenticate>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Jwt:Issuer"];
+        options.Audience = builder.Configuration["Jwt:Audience"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))
+        };
+        options.RequireHttpsMetadata = false;
+    });
+
+builder.Services.AddAuthorization();
 
 
 
@@ -32,10 +52,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+    endpoints.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.Run();

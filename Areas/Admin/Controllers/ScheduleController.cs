@@ -5,9 +5,11 @@ using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 
-namespace Barber.UI.Controllers
+namespace Barber.UI.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ScheduleController : Controller
     {
         private readonly IScheduleServices _scheduleServices;
@@ -43,7 +45,7 @@ namespace Barber.UI.Controllers
             try
             {
                 var objectResponse = await _scheduleServices.GetByClientIdAsync(clientId, TokenJwt());
-                if(objectResponse is null)
+                if (objectResponse is null)
                 {
                     return View("Error");
                 }
@@ -57,12 +59,12 @@ namespace Barber.UI.Controllers
                 TempData["Error"] = objectResponse.Message;
                 return View("Error");
             }
-            catch(HttpRequestException)
+            catch (HttpRequestException)
             {
                 TempData["Erro"] = "Erro interno, por favor, comunique ao suporte";
-                return View("Error",TempData);
+                return View("Error", TempData);
             }
-          
+
         }
         [HttpGet]
         public IActionResult Delete()
@@ -84,26 +86,59 @@ namespace Barber.UI.Controllers
                 return View("Index");
 
             }
-            catch(Exception e)
+            catch (Exception)
             {
                 TempData["Erro"] = "Erro na conexão, por favor consulte o suporte técnico.";
                 return View("Error");
-            }  
+            }
         }
         [HttpGet]
         public async Task<ActionResult<List<SchedulesDTO>>> ListSchedules(ParametersToPagination parameters)
         {
-            var response = await _scheduleServices.GetAllAsync(parameters,TokenJwt());
-            if(response.StatusCode == HttpStatusCode.OK && response.Objects is not null)
+            try
             {
+                parameters.PageNumber = 1;
+                parameters.PageSize = 30;
+                var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
                 return View(response.Objects);
             }
-            TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-            return View("Error");
+            catch (HttpRequestException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+            catch (SocketException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+
         }
         public IActionResult Error()
         {
             return View();
+        }
+        [HttpGet]
+        public IActionResult Add()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(SchedulesDTO DTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _scheduleServices.AddAsync(DTO, TokenJwt());
+                if (response.Equals(HttpStatusCode.Created))
+                {
+                    TempData["Success"] = "Agendamento adicionado com sucesso!";
+                    return RedirectToAction("ListSchedules");
+                }
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+            ModelState.AddModelError("Error", "Verifique todos os campos e tente novamente!");
+            return View(DTO);
         }
     }
 }
