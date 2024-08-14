@@ -17,6 +17,7 @@
         <table class="table table-striped table-hover table-responsive-md bg-light">
             <thead class="table-dark">
                 <tr>
+                    <th>ID Agendamento</th>
                     <th>ID Cliente</th>
                     <th>ID Barbeiro</th>
                     <th>Serviço</th>
@@ -29,6 +30,7 @@
                 @foreach (var schedule in Model)
                 {
                     <tr>
+                        <td>@schedule.Id</td>
                         <td>@schedule.IdClient</td>
                         <td>@schedule.IdBarber</td>
                         <td>@schedule.TypeOfService</td>

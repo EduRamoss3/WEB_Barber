@@ -1,9 +1,95 @@
-﻿@{
+﻿@using Barber.UI.Entities
+@model List<SchedulesDTO>
+
+@{
     ViewData["Title"] = "Index";
 }
-<h1 class="text-center text-info">Admin</h1>
 
-@if(TempData["Success"] is not null)
+@if (TempData["Success"] is not null)
 {
     <h1 class="text-info">@TempData["Success"]</h1>
 }
+
+<aside class="aside-container">
+    <div class="container-adm">
+        <button type="button" class="btn btn-info shadow-lg">
+            <a class="text-decoration-none text-white d-flex align-items-center" asp-area="Admin" asp-controller="Schedule" asp-action="Search">
+                <img src="~/Images/lupa.png" width="25px" alt="Lupa" />
+                Pesquisar
+            </a>
+        </button>
+
+        <button class="btn btn-danger">
+            <a class="text-decoration-none text-white d-flex align-items-center" asp-area="Admin" asp-controller="Schedule" asp-action="Delete">
+                <img src="~/Images/lixeira.png" width="25px" alt="Lixeira" />
+                Deletar
+            </a>
+        </button>
+
+        <button class="btn btn-success">
+            <a class="text-decoration-none text-white d-flex align-items-center" asp-area="Admin" asp-controller="Schedule" asp-action="Add">
+                <img src="~/Images/adicionar.png" width="25px" alt="+" />
+                Adicionar
+            </a>
+        </button>
+    </div>
+</aside>
+<main class="container-main">
+    @if (Model is not null)
+    {
+        @if (Model.Count == 0)
+        {
+            <h1 class="text-center text-muted">Sem agendamentos!</h1>
+        }
+        else
+        {
+            @if (TempData["Success"] is not null)
+            {
+                <p class="text-center text-info">@TempData["Success"]</p>
+            }
+            <h2 class="text-center text-light m-1">Todos os agendamentos</h2>
+            <table class="table table-hover table-responsive-md bg-light text-modify">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID Agendamento</th>
+                        <th>ID Cliente</th>
+                        <th>ID Barbeiro</th>
+                        <th>Serviço</th>
+                        <th>Data</th>
+                        <th>Valor</th>
+                        <th>Finalizado</th>
+                    </tr>
+                </thead>
+                <tbody class="background-table">
+                    @foreach (var schedule in Model)
+                    {
+                        <tr>
+                            <td>@schedule.Id</td>
+                            <td>@schedule.IdClient</td>
+                            <td>@schedule.IdBarber</td>
+                            <td>@schedule.TypeOfService</td>
+                            <td>@schedule.DateSchedule.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@schedule.ValueForService.ToString("C")</td>
+                            <td>
+                                @if (schedule.IsFinalized)
+                                {
+                                    <span class="badge bg-success">Sim</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Não</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    }
+    else
+    {
+        <h1>Erro, Faça o login e tente novamente.</h1>
+    }
+</main>
+

@@ -1,25 +1,25 @@
 ﻿@model LoginViewModel
-
+<div class="container-c">
     <div class="login-container">
-        <div class="login-form text-dark" > 
+        <div class="login-form text-dark">
             <h1 class="text-center mb-4">Faça login, marque seu horário.</h1>
             <form class="form-horizontal" asp-controller="Account" asp-action="Login" method="post">
                 <div asp-validation-summary="All" class="alert alert-danger"></div>
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label">Email</label>
-                <input type="email" asp-for="Email" placeholder="email@exemplo.com" class="form-control" />
+                    <input type="email" asp-for="Email" placeholder="email@exemplo.com" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Password" class="form-label" >Senha</label>
-                <input type="password" asp-for="Password" placeholder="Digite sua senha" class="form-control" />
+                    <label asp-for="Password" class="form-label">Senha</label>
+                    <input type="password" asp-for="Password" placeholder="Digite sua senha" class="form-control" />
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label" >Confirme a senha</label>
-                <input type="password" asp-for="ConfirmPassword" placeholder="Digite sua senha novamente" class="form-control" />
+                    <label asp-for="ConfirmPassword" class="form-label">Confirme a senha</label>
+                    <input type="password" asp-for="ConfirmPassword" placeholder="Digite sua senha novamente" class="form-control" />
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                 </div>
 
@@ -29,3 +29,5 @@
             </form>
         </div>
     </div>
+</div>
+    

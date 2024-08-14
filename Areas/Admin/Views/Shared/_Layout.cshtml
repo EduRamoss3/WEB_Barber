@@ -6,8 +6,10 @@
     <title>@ViewData["Title"] - Barber.UI</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/StyleSheet.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/css/StyleSheet.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Barber.UI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+
     <style>
         /* Ensure the body and html take up full height */
         html, body {
@@ -44,23 +46,14 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Schedule" asp-action="Search">Pesquisa</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Schedule" asp-action="Delete">Deletar</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Schedule" asp-action="Add">Adicionar</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Schedule" asp-action="ListSchedules">Ver Agendamentos</a>
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="Schedule" asp-action="Index">Gerenciar Agenda</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
-        <div class="container bg-light content">
+        <div class="container content">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>

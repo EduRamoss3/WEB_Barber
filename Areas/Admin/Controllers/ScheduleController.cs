@@ -29,9 +29,25 @@ namespace Barber.UI.Areas.Admin.Controllers
         }
         [Route("Index")]
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(ParametersToPagination parameters)
         {
-            return View();
+            try
+            {
+                parameters.PageNumber = 1;
+                parameters.PageSize = 30;
+                var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
+                return View(response.Objects);
+            }
+            catch (HttpRequestException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+            catch (SocketException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
         }
         [Route("Search")]
         [HttpGet]
@@ -91,28 +107,6 @@ namespace Barber.UI.Areas.Admin.Controllers
                 TempData["Erro"] = "Erro na conexão, por favor consulte o suporte técnico.";
                 return View("Error");
             }
-        }
-        [HttpGet]
-        public async Task<ActionResult<List<SchedulesDTO>>> ListSchedules(ParametersToPagination parameters)
-        {
-            try
-            {
-                parameters.PageNumber = 1;
-                parameters.PageSize = 30;
-                var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
-                return View(response.Objects);
-            }
-            catch (HttpRequestException)
-            {
-                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View("Error");
-            }
-            catch (SocketException)
-            {
-                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View("Error");
-            }
-
         }
         public IActionResult Error()
         {

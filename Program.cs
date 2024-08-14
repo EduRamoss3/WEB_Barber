@@ -17,6 +17,7 @@ builder.Services.AddHttpClient("API_Barber", c =>
 builder.Services.AddScoped<ObjectResponse<SchedulesDTO>>();
 builder.Services.AddScoped<IScheduleServices,SchedulesService>();   
 builder.Services.AddTransient<IAuthenticate, Authenticate>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
