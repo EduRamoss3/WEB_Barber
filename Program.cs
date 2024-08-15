@@ -33,6 +33,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
         options.RequireHttpsMetadata = false;
     });
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de inatividade antes que a sessão expire
+    options.Cookie.HttpOnly = true; // Assegura que o cookie da sessão não pode ser acessado via JavaScript
+    options.Cookie.IsEssential = true; // Necessário quando estiver usando o GDPR
+});
+
 
 builder.Services.AddAuthorization();
 
@@ -50,7 +58,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -68,3 +76,4 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
+

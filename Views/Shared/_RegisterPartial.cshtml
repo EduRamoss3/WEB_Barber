@@ -1,8 +1,21 @@
-﻿
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Login";
+    var session = HttpContextAccessor.HttpContext.Session.GetString("Logged");
+    bool parsed = false;
+    if (session is not null)
+    {
+        parsed = bool.Parse(session);
+    }
 }
 
-<li class="nav-item">
-    <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-</li>
+@if (!parsed)
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+    </li>
+}
+
+
+

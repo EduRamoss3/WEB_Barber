@@ -1,9 +1,9 @@
 ﻿@model LoginViewModel
 <div class="container-c">
-    <div class="login-container">
-        <div class="login-form text-dark">
-            <h1 class="text-center mb-4">Faça login, marque seu horário.</h1>
-            <form class="form-horizontal" asp-controller="Account" asp-action="Login" method="post">
+    <div class="login-container box-shadow shadow-sm shadow-lg">
+        <div class="login-form text-dark ">
+            <h1 class="text-center mb-4 fw-bold">Faça login, marque seu horário.</h1>
+            <form class="form-horizontal " asp-controller="Account" asp-action="Login" method="post">
                 <div asp-validation-summary="All" class="alert alert-danger"></div>
                 <div class="mb-3">
                     <label asp-for="Email" class="form-label">Email</label>

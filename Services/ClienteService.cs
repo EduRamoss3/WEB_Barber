@@ -1,4 +1,5 @@
 ﻿using Barber.UI.Entities;
+using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using System.Text;
@@ -28,29 +29,89 @@ namespace Barber.UI.Services
             }
         }
 
-        public Task<IEnumerable<ClientDTO>> GetAllAsync(ParametersToPagination parameters)
+        public async Task<ObjectResponse<ClientDTO>> GetAllAsync(ParametersToPagination parameters)
         {
-            throw new NotImplementedException();
+            using var response = await client.GetAsync(apiEndPoint + "all" + $"{parameters.PageNumber}/ + {parameters.PageSize}");
+            {
+                ObjectResponse<ClientDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStreamAsync();
+                    var DeserializerItem = JsonSerializer.Deserialize<List<ClientDTO>>(content);
+
+                    _objectResponse.Objects = DeserializerItem;
+                    _objectResponse.RequestUri = response.RequestMessage.RequestUri;
+                }
+                return _objectResponse;
+                
+            }
+        }
+        public async Task<ObjectResponse<ClientDTO>> GetByIdAsync(int id)
+        {
+            using var response = await client.GetAsync(apiEndPoint + id);
+            {
+                ObjectResponse<ClientDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStreamAsync();
+                    var DeserializerItem = JsonSerializer.Deserialize<ClientDTO>(content);
+
+                    _objectResponse.OneObject = DeserializerItem;
+                    _objectResponse.RequestUri = response.RequestMessage.RequestUri;
+                }
+                return _objectResponse;
+            }
         }
 
-        public Task<ClientDTO> GetByIdAsync(int id)
+        public async Task<bool> RemoveAsync(int? id)
         {
-            throw new NotImplementedException();
+            if (id.HasValue)
+            {
+                using (var response = await client.DeleteAsync(apiEndPoint + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
-        public Task<bool> RemoveAsync(int? id)
+        public async Task<bool> UpdateAsync(ClientDTO clientDTO, int? id)
         {
-            throw new NotImplementedException();
+            var json = JsonSerializer.Serialize(clientDTO);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            using(var response = await client.PutAsync(apiEndPoint + id, content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public Task<bool> UpdateAsync(ClientDTO clientDTO, int? id)
+        public async Task<bool> UpdatePointsAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            var json = JsonSerializer.Serialize(id);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        public Task UpdatePointsAsync(int id)
-        {
-            throw new NotImplementedException();
+            using (var response = await client.PatchAsync(apiEndPoint + id,content))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

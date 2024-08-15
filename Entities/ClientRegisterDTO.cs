@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Barber.UI.Entities
 {
@@ -11,16 +12,20 @@ namespace Barber.UI.Entities
 
         [Required(ErrorMessage = "Password is required!")]
         [DataType(DataType.Password)]
+        [DisplayName("Senha")]
+
         public string Password { get; init; }
 
         [Required(ErrorMessage = "Password confirmation is required!")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "Passwords don't match!")]
+        [DisplayName("Confirmação de senha")]
+
         public string ConfirmPassword { get; init; }
 
         [Required(ErrorMessage = "Name is required!")]
         [StringLength(200, ErrorMessage = "Max 200 characters")]
+        [DisplayName("Nome")]
         public string Name { get; init; }
     }
 }

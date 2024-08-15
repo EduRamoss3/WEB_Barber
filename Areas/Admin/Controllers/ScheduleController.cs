@@ -36,6 +36,10 @@ namespace Barber.UI.Areas.Admin.Controllers
                 parameters.PageNumber = 1;
                 parameters.PageSize = 30;
                 var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
+
+                if (response.RequestUri.AbsolutePath.Contains("Account/Login")){
+                    return Redirect($"{response.RequestUri.AbsolutePath}");
+                }
                 return View(response.Objects);
             }
             catch (HttpRequestException)

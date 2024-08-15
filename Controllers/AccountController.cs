@@ -18,13 +18,15 @@ namespace Barber.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
+            bool isLogged = false;
+
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("Login", "Login inválido");
+                ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
                 return View(model);
             }
             var result = await _authenticate.Authenticates(model);
-            if(result is not null)
+            if (result is not null)
             {
                 Response.Cookies.Append("X-Access-Token", result.Token, new CookieOptions()
                 {
@@ -33,8 +35,15 @@ namespace Barber.UI.Controllers
                     SameSite = SameSiteMode.Strict,
                     Expires = result.Expiration,
                 });
+
+                isLogged = true;
+                HttpContext.Session.SetString("Logged", isLogged.ToString());
+
                 return RedirectToAction("Index", "Home");
             }
+
+            ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
+            HttpContext.Session.SetString("Logged", isLogged.ToString());
             return View();
         }
         public IActionResult Register()

@@ -93,6 +93,7 @@ namespace Barber.UI.Services
                 ObjectResponse<SchedulesDTO> _objectResponse = new();
                 _objectResponse.StatusCode = response.StatusCode;
                 _objectResponse.Message = response.ReasonPhrase;
+                _objectResponse.RequestUri = response.RequestMessage.RequestUri;
 
                 if (response.IsSuccessStatusCode)
                 {

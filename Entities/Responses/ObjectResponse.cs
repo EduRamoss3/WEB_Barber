@@ -8,6 +8,7 @@ namespace Barber.UI.Entities.Responses
         public string Message { get; set; }
         public List<T> Objects { get; set; }
         public T OneObject { get; set; }
+        public Uri RequestUri { get; set; }
 
         public ObjectResponse(HttpStatusCode statusCode, string message, List<T> objects, T oneObject)
         {
@@ -28,6 +29,13 @@ namespace Barber.UI.Entities.Responses
             StatusCode = statusCode;
             Message = message;
             OneObject = oneObject;
+        }
+        public ObjectResponse(HttpStatusCode statusCode, string message, T oneObject,Uri requestUri)
+        {
+            StatusCode = statusCode;
+            Message = message;
+            OneObject = oneObject;
+            RequestUri = requestUri;
         }
         public ObjectResponse()
         {

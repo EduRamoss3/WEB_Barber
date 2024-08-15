@@ -1,7 +1,7 @@
 ﻿@model Barber.UI.Entities.ClientRegisterDTO
 
-<div class="container mt-4">
-    <h2>Register Client</h2>
+<div class="container mt-4 text-dark">
+    <h2 class="text-black fw-bold">Registro de Cliente</h2>
     <form asp-action="Register" method="post" class="needs-validation" novalidate>
 
         <div class="mb-3">
@@ -28,7 +28,7 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-success">Registrar</button>
     </form>
 </div>
 
