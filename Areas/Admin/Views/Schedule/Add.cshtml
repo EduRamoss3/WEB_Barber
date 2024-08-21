@@ -1,22 +1,24 @@
-﻿@model Barber.UI.Entities.SchedulesDTO
+﻿@using Barber.UI.Entities.DTO
+@model SchedulesDTO
 
 @{
     ViewData["Title"] = "Adicionar Agendamento";
 }
-
+@if(TempData["Erro"] is not null)
+{
+    <h1 class="text-danger">@TempData["Erro"]</h1>
+}
 <div class="container mt-5">
     <h2>@ViewData["Title"]</h2>
     <form asp-controller="Schedule" asp-action="Add" method="post">
         <div class="mb-3">
-            <label asp-for="IdBarber" class="form-label"></label>
-            <input asp-for="IdBarber" class="form-control" placeholder="Digite o ID do barbeiro" />
-            <span asp-validation-for="IdBarber" class="text-danger"></span>
+           <label asp-for="IdBarber" class="form-label"></label>
+           <select asp-for="IdBarber" class="form-control" asp-items="@ViewBag.Barbeiros"></select>
         </div>
 
         <div class="mb-3">
             <label asp-for="IdClient" class="form-label"></label>
-            <input asp-for="IdClient" class="form-control" placeholder="Digite o ID do cliente" />
-            <span asp-validation-for="IdClient" class="text-danger"></span>
+            <select asp-for="IdClient" class="form-control" asp-items="@ViewBag.Clientes"></select>
         </div>
         <div class="mb-3">
             <label asp-for="TypeOfService" class="form-label"></label>
@@ -37,9 +39,11 @@
         </div>
         <div class="mb-3">
             <label asp-for="DateSchedule" class="form-label"></label>
-            <input asp-for="DateSchedule" class="form-control" type="datetime-local" />
+            <input asp-for="DateSchedule" class="form-control" type="datetime-local" step="1800" />
             <span asp-validation-for="DateSchedule" class="text-danger"></span>
         </div>
+
+
         <div class="mb-3">
             <label asp-for="ValueForService" class="form-label"></label>
             <input asp-for="ValueForService" class="form-control" placeholder="Digite o valor do serviço" />
@@ -58,3 +62,22 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+<script>
+    document.querySelector('[type="datetime-local"]').addEventListener('change', function () {
+        var dateInput = this.value;
+        var date = new Date(dateInput);
+        var minutes = date.getMinutes();
+
+        if (minutes % 30 !== 0) {
+            // Ajustar para o próximo intervalo de 30 minutos
+            if (minutes < 30) {
+                date.setMinutes(30);
+            } else {
+                date.setMinutes(0);
+                date.setHours(date.getHours() + 1);
+            }
+            this.value = date.toISOString().slice(0, 16);
+            alert('Por favor, selecione um horário em intervalos de 30 minutos.');
+        }
+    });
+</script>

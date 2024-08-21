@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Barber.UI.Entities.DTO;
 
 namespace Barber.UI.Entities.Responses
 {

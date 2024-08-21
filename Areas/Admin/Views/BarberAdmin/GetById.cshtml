@@ -1,0 +1,22 @@
+﻿@using Barber.UI.Entities.DTO
+@using Barber.UI.Entities.Responses
+@model ObjectResponse<BarberDTO>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Disponibility</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var barber in Model.Objects)
+        {
+            <tr>
+                <td>@barber.Id</td>
+                <td>@barber.Name</td>
+                <td>@(barber.Disponibility ? "Available" : "Unavailable")</td>
+            </tr>
+        }
+    </tbody>
+</table>

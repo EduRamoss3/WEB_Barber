@@ -1,4 +1,6 @@
-﻿namespace Barber.UI.Entities.Enums
+﻿using System.Data.SqlTypes;
+
+namespace Barber.UI.Entities.Enums
 {
     public enum TypeOfService : int
     {

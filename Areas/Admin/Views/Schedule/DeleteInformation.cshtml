@@ -1,0 +1,30 @@
+﻿@model Barber.UI.Entities.DTO.SchedulesDTO
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-danger text-white">
+            <h4>Confirmar Exclusão</h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Tem certeza de que deseja excluir este agendamento?</h5>
+            <p class="card-text">
+                <strong>Cliente:</strong> @Model.ClientName <br>
+                <strong>Barbeiro:</strong> @Model.BarberName <br>
+                <strong>Tipo de Serviço:</strong> @Model.TypeOfService <br>
+                <strong>Data:</strong> @Model.DateSchedule.ToString("dd/MM/yyyy HH:mm") <br>
+                <strong>Valor:</strong> @Model.ValueForService.ToString("C") <br>
+                <strong>Finalizado:</strong> @(Model.IsFinalized ? "Sim" : "Não") <br>
+            </p>
+            <div class="alert alert-warning" role="alert">
+                Esta ação é irreversível. O agendamento será permanentemente excluído.
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="@Url.Action("Index", "Schedule")" class="btn btn-secondary">Cancelar</a>
+            <form asp-action="Delete" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-danger">Deletar</button>
+            </form>
+        </div>
+    </div>
+</div>

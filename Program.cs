@@ -1,10 +1,10 @@
 using Barber.UI.Entities.Responses;
-using Barber.UI.Entities;
 using Barber.UI.Services;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Barber.UI.Entities.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +18,7 @@ builder.Services.AddScoped<ObjectResponse<SchedulesDTO>>();
 builder.Services.AddScoped<IScheduleServices,SchedulesService>();   
 builder.Services.AddTransient<IAuthenticate, Authenticate>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IBarberService, BarberService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

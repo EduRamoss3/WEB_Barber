@@ -1,4 +1,4 @@
-﻿using Barber.UI.Entities;
+﻿using Barber.UI.Entities.DTO;
 using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
@@ -104,7 +104,26 @@ namespace Barber.UI.Services
                 return _objectResponse;
             }
         }
+        public async Task<ObjectResponse<SchedulesDTO>> GetWithDataAsync(string token)
+        {
+            PutTokenInHeadersAuthorization(token, client);
 
+            using (var response = await client.GetAsync(apiEndPoint + "data"))
+            {
+                ObjectResponse<SchedulesDTO> _objectResponse = new();
+                _objectResponse.StatusCode = response.StatusCode;
+                _objectResponse.Message = response.ReasonPhrase;
+                _objectResponse.RequestUri = response.RequestMessage.RequestUri;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<List<SchedulesDTO>>(apiResponse, _options);
+                    _objectResponse.Objects = itemDeserialized;
+                }
+                return _objectResponse;
+            }
+        }
         public async Task<ObjectResponse<SchedulesDTO>> GetByBarberIdAsync(int barberId, string token)
         {
             PutTokenInHeadersAuthorization(token, client);

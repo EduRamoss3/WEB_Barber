@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace Barber.UI.Entities
+namespace Barber.UI.Entities.DTO
 {
     public sealed record ClientDTO
     {
@@ -17,5 +18,7 @@ namespace Barber.UI.Entities
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime LastTimeHere { get; init; }
+
+
     }
 }

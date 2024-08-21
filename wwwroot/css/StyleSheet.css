@@ -5,18 +5,18 @@
 .container{
     border-radius: 20px;
 }
-.btn{
-    background-color: #dee3e8;
-    color: gray;
-    border: 0;
-    box-shadow: 1px 2px 1px #cacaca;
+.left-container{
+    height: 50vh;
+    position: relative;
+    width: 10%;
+    border-right: 4px solid lightgray;
+    background-color: gray;
 }
 .container-c{
     display: flex;
-    width:100%;
     align-items: center;
     justify-content: center;
-
+    width:100%;
 }
 .login-container {
     display: flex;
@@ -30,11 +30,17 @@
     padding: 10px;
 }
 .aside-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: fit-content;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    align-self: center;
     padding: 20px;
+    background-color: lightgray;
+}
+.main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
 }

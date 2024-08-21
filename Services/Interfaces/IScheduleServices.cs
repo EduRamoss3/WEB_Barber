@@ -1,4 +1,4 @@
-﻿using Barber.UI.Entities;
+﻿using Barber.UI.Entities.DTO;
 using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using System.Net;
@@ -28,5 +28,7 @@ namespace Barber.UI.Services.Interfaces
         Task<bool> OpenServiceAsync(int id, string token);
 
         Task<ObjectResponse<List<DateTime>>> GetByDateDisponible(int idBarber, DateTime dateTimeSearch, string token);
+
+        Task<ObjectResponse<SchedulesDTO>> GetWithDataAsync(string token);
     }
 }

@@ -1,11 +1,14 @@
-﻿using Barber.UI.Entities;
+﻿using Barber.UI.Entities.DTO;
 using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Claims;
 
 namespace Barber.UI.Areas.Admin.Controllers
 {
@@ -13,11 +16,15 @@ namespace Barber.UI.Areas.Admin.Controllers
     public class ScheduleController : Controller
     {
         private readonly IScheduleServices _scheduleServices;
+        private readonly IBarberService _barberService;
+        private readonly IClienteService _clientService;
         string token = string.Empty;
 
-        public ScheduleController(IScheduleServices scheduleServices)
+        public ScheduleController(IScheduleServices scheduleServices, IBarberService barberService, IClienteService clientService)
         {
             _scheduleServices = scheduleServices;
+            _barberService = barberService;
+            _clientService = clientService;
         }
         private string TokenJwt()
         {
@@ -27,18 +34,68 @@ namespace Barber.UI.Areas.Admin.Controllers
             }
             return token;
         }
-        [Route("Index")]
+        protected string GetUserRoleFromToken()
+        {
+           
+            if (HttpContext.Request.Cookies.ContainsKey("X-Access-Token"))
+            {
+                var token = HttpContext.Request.Cookies["X-Access-Token"];
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+                var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+                return roleClaim;
+            }
+
+            return null;
+        }
+        [Route("All")]
         [HttpGet]
-        public async Task<IActionResult> Index(ParametersToPagination parameters)
+        public async Task<IActionResult> All(ParametersToPagination parameters)
         {
             try
             {
+                var userRole = GetUserRoleFromToken();
+                if (userRole.Equals("Member"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
                 parameters.PageNumber = 1;
                 parameters.PageSize = 30;
                 var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
 
                 if (response.RequestUri.AbsolutePath.Contains("Account/Login")){
                     return Redirect($"{response.RequestUri.AbsolutePath}");
+                }
+               
+                return View(response.Objects);
+            }
+            catch (HttpRequestException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+            catch (SocketException)
+            {
+                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
+                return View("Error");
+            }
+        }
+        [Route("Index")]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                var response = await _scheduleServices.GetWithDataAsync(TokenJwt());
+
+                if (response.RequestUri.AbsolutePath.Contains("Account/Login"))
+                {
+                    return Redirect($"{response.RequestUri.AbsolutePath}");
+                }
+                if (response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return RedirectToAction("Index", "Home");
                 }
                 return View(response.Objects);
             }
@@ -53,6 +110,8 @@ namespace Barber.UI.Areas.Admin.Controllers
                 return View("Error");
             }
         }
+
+
         [Route("Search")]
         [HttpGet]
         public IActionResult Search()
@@ -91,6 +150,17 @@ namespace Barber.UI.Areas.Admin.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> DeleteInformation(int id)
+        {
+            var schedules = await _scheduleServices.GetByIdAsync(id, TokenJwt());
+            if(schedules.OneObject is not null)
+            {
+                return View(schedules.OneObject);
+            }
+            TempData["Error"] = "Erro ao encontrar o agendamento";
+            return View("Error");
+        }
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -103,7 +173,7 @@ namespace Barber.UI.Areas.Admin.Controllers
                     return View("Error");
                 }
                 TempData["Success"] = "Agendamento removido com sucesso!";
-                return View("Index");
+                return RedirectToAction("Index");
 
             }
             catch (Exception)
@@ -117,8 +187,14 @@ namespace Barber.UI.Areas.Admin.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult Add()
+        public async Task<IActionResult> Add()
         {
+            ParametersToPagination parameters = new(200,1);
+            var barbeiros = await _barberService.GetAllAsync(parameters, TokenJwt());
+            var clientes = await _clientService.GetAllAsync(parameters, TokenJwt());
+
+            ViewBag.Barbeiros = new SelectList(barbeiros.Objects,"Id","Name");
+            ViewBag.Clientes = new SelectList(clientes.Objects, "Id", "Name");
             return View();
         }
         [HttpPost]
@@ -130,13 +206,19 @@ namespace Barber.UI.Areas.Admin.Controllers
                 if (response.Equals(HttpStatusCode.Created))
                 {
                     TempData["Success"] = "Agendamento adicionado com sucesso!";
-                    return RedirectToAction("ListSchedules");
+                    return RedirectToAction("Index");
                 }
                 TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View("Error");
+                return View(DTO);
             }
             ModelState.AddModelError("Error", "Verifique todos os campos e tente novamente!");
             return View(DTO);
+        }
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            ViewBag.Denied = "Acesso negado";
+            return View();
         }
     }
 }

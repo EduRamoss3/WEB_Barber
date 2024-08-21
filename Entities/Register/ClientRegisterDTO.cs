@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Barber.UI.Entities
+namespace Barber.UI.Entities.Register
 {
     public sealed record ClientRegisterDTO
     {

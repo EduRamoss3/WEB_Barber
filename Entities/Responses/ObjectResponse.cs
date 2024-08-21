@@ -2,7 +2,7 @@
 
 namespace Barber.UI.Entities.Responses
 {
-    public class ObjectResponse<T> where T : class
+    public sealed class ObjectResponse<T> where T : class
     {
         public HttpStatusCode StatusCode { get; set; }
         public string Message { get; set; }
@@ -37,7 +37,7 @@ namespace Barber.UI.Entities.Responses
             OneObject = oneObject;
             RequestUri = requestUri;
         }
-        public ObjectResponse()
+       public ObjectResponse()
         {
 
         }

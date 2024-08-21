@@ -1,4 +1,4 @@
-﻿using Barber.UI.Entities;
+﻿using Barber.UI.Entities.Register;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,5 +33,6 @@ namespace Barber.UI.Areas.Admin.Controllers
             ModelState.AddModelError("Error", "Verifique todos os campos e tente novamente!");
             return View(clientRegisterDTO);
         }
+     
     }
 }
