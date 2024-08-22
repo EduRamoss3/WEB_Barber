@@ -50,8 +50,8 @@
                         {
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="heading-@item.Id">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@item.Id" aria-expanded="false" aria-controls="collapse-@item.Id">
-                                        @item.DateSchedule.ToString("dddd, dd MMMM yyyy") ás @item.DateSchedule.ToString("HH:mm"); 
+                                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@item.Id" aria-expanded="false" aria-controls="collapse-@item.Id">
+                                        @item.DateSchedule.ToString("dddd, dd MMMM yyyy") ás @item.DateSchedule.ToString("HH:mm") 
                                     </button>
                                 </h2>
                                 <div id="collapse-@item.Id" class="accordion-collapse collapse" aria-labelledby="heading-@item.Id" data-bs-parent="#accordionSchedule">
@@ -64,8 +64,8 @@
                                             <strong>Finalizado:</strong> @(item.IsFinalized ? "Sim" : "Não") <br>
                                         </p>
                                         <div class="d-flex justify-content-between">
-                                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-idSchedule="@item.Id">Editar</a>
+                                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-idSchedule="@item.Id">Detalhes</a>
                                             <a class="btn btn-sm btn-danger" asp-action="DeleteInformation" asp-route-id="@item.Id">Deletar</a>
                                         </div>
                                     </div>

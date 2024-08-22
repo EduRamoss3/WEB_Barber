@@ -9,14 +9,25 @@
         parsed = bool.Parse(session);
     }
 }
+<style>
+    .no-marker {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
+    .nav-item {
+        list-style: none;
+    }
+</style>
 @if (parsed)
 {
-    <p class="nav-link text-primary fw-bolder">Seja bem-vindo!</p>
+
+    <li class="nav-item text-light text-decoration-none no-marker">Seja bem-vindo!</li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+        <a class="nav-link text-light"  asp-controller="Account" asp-action="Login">Login</a>
     </li>
 }

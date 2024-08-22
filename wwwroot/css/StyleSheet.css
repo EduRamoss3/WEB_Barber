@@ -1,7 +1,43 @@
 ﻿body {
-    background-color: #fff;
-    font-family: 'Muli', sans-serif;
+    background-color: #f6f6f6;
+    font-family:'Segoe UI Symbol';
 }
+h2,h3 {
+    text-transform:uppercase;
+}
+.navbar{
+    height: 12vh;
+}
+.img{
+    width:7vw;
+}
+.btn {
+    background-color: #ffdb00;
+    color: white;
+    border: white;
+}
+.bg-wood h2{
+    color: black;
+    text-transform:uppercase;
+}
+.bg-wood {
+    color: rgb(203, 203, 203);
+    border-radius: 10px;
+}
+    .bg-wood p {
+        text-shadow: 1px 1px 0px 1px white;
+        text-align:justify;
+    }
+.navbar {
+    background-color: #B88355;
+}
+.footer {
+    background-color: black;
+}
+.nav-link{
+    color:aliceblue;
+}
+
 .container{
     border-radius: 20px;
 }

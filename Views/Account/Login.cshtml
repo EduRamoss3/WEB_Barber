@@ -1,33 +1,36 @@
 ﻿@model LoginViewModel
-<div class="container-c">
-    <div class="login-container box-shadow shadow-sm shadow-lg">
-        <div class="login-form text-dark ">
-            <h1 class="text-center mb-4 fw-bold">Faça login, marque seu horário.</h1>
-            <form class="form-horizontal " asp-controller="Account" asp-action="Login" method="post">
-                <div asp-validation-summary="All" class="alert alert-danger"></div>
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <input type="email" asp-for="Email" placeholder="email@exemplo.com" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
 
-                <div class="mb-3">
-                    <label asp-for="Password" class="form-label">Senha</label>
-                    <input type="password" asp-for="Password" placeholder="Digite sua senha" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="box-shadow p-5 rounded-3 bg-light" style="max-width: 400px; width: 100%;">
+        <h1 class="text-center mb-4 fw-bold">Faça login, marque seu horário</h1>
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
 
-                <div class="mb-3">
-                    <label asp-for="ConfirmPassword" class="form-label">Confirme a senha</label>
-                    <input type="password" asp-for="ConfirmPassword" placeholder="Digite sua senha novamente" class="form-control" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input type="email" asp-for="Email" placeholder="email@exemplo.com" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
-                <div class="mb-3">
-                    <input type="submit" value="Login" class="btn btn-primary w-100" />
-                </div>
-            </form>
-        </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Senha</label>
+                <input type="password" asp-for="Password" placeholder="Digite sua senha" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label">Confirme a senha</label>
+                <input type="password" asp-for="ConfirmPassword" placeholder="Digite sua senha novamente" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid">
+                <input type="submit" value="Login" class="btn btn-primary btn-lg" />
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="@Url.Action("ForgotPassword", "Account")" class="text-decoration-none">Esqueceu sua senha?</a>
+            </div>
+        </form>
     </div>
 </div>
-    

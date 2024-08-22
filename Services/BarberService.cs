@@ -84,7 +84,7 @@ namespace Barber.UI.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var apiResponse = await response.Content.ReadAsStreamAsync();
-                    var json = await JsonSerializer.DeserializeAsync<BarberDTO>(apiResponse);
+                    var json = await JsonSerializer.DeserializeAsync<BarberDTO>(apiResponse, _options);
                     _objectResponse.OneObject = json;
                 }
                 return _objectResponse;

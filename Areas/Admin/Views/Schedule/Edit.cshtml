@@ -1,0 +1,74 @@
+﻿@model Barber.UI.Entities.DTO.SchedulesDTO
+
+@{
+    ViewData["Title"] = "Editar Agendamento";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Editar Agendamento</h2>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Schedule" asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="IdBarber" class="form-label">Barbeiro</label>
+                    <select asp-for="IdBarber" asp-items="ViewBag.Barbeiros" class="form-select"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="IdClient" class="form-label">Cliente</label>
+                    <select asp-for="IdClient" asp-items="ViewBag.Clientes" class="form-select"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TypeOfService" class="form-label">Tipo de Serviço</label>
+                    <select asp-for="TypeOfService" class="form-select">
+                        <option value="1">Normal</option>
+                        <option value="2">Degradê</option>
+                        <option value="3">Degradê e Barba</option>
+                        <option value="4">Barba</option>
+                        <option value="5">Coloração</option>
+                        <option value="6">Coloração da Barba e Corte normal</option>
+                        <option value="7">Coloração geral e Degradê</option>
+                        <option value="8">Coloração e CorteNormal</option>
+                        <option value="9">Coloração da Barba e Degradê</option>
+                        <option value="10">Somente lavagem</option>
+                        <option value="11">Depilação</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ValueForService" class="form-label">Valor do Serviço</label>
+                    <input asp-for="ValueForService" class="form-control" />
+                    <span asp-validation-for="ValueForService" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DateSchedule" class="form-label">Data do Agendamento</label>
+                    <input type="datetime-local" asp-for="DateSchedule" class="form-control" />
+                    <span asp-validation-for="DateSchedule" class="text-danger"></span>
+                </div>
+
+                <input type="hidden" asp-for="ClientName" />
+                <input type="hidden" asp-for="BarberName" />
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="IsFinalized" />
+                    <label class="form-check-label" asp-for="IsFinalized">
+                        @Html.DisplayNameFor(model => model.IsFinalized)
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                    <input type="submit" value="Salvar" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

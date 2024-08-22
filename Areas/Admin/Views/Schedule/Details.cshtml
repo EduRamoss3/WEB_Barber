@@ -1,0 +1,55 @@
+﻿@model Barber.UI.Entities.DTO.SchedulesDTO
+
+@{
+    ViewData["Title"] = "Detalhe";
+}
+
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Detalhes do Agendamento</h2>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Código do Agendamento:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.Id)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Código do Barbeiro:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.IdBarber)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Código do Cliente:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.IdClient)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Tipo de Serviço:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.TypeOfService)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Data do Agendamento:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.DateSchedule)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Valor do Serviço:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.ValueForService)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Finalizado:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.IsFinalized)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Nome do Cliente:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.ClientName)</div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4 font-weight-bold">Nome do Barbeiro:</div>
+                <div class="col-sm-8">@Html.DisplayFor(model => model.BarberName)</div>
+            </div>
+        </div>
+        <div class="card-footer text-end">
+            @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary me-2" })
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+</div>

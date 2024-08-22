@@ -1,0 +1,45 @@
+﻿@using Barber.UI.Entities.DTO
+@model List<BarberDTO>
+
+@{
+    ViewBag.Title = "Barbeiros";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Nossos Barbeiros</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning text-center">
+            Nenhum barbeiro encontrado.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var barber in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <img src="~/Images/do-utilizador.png" class="rounded-circle mb-3" alt="@barber.Name" width="100" height="100">
+                            <h5 class="card-title">@barber.Name</h5>
+                            @if (barber.Disponibility)
+                            {
+                                <p class="card-text">Disponível</p>
+
+                            }
+                            else
+                            {
+                                <p class="card-text">Indisponível</p>
+                            }
+                        </div>
+                        <div class="card-footer text-center">
+                            <a  asp-area="Admin" asp-controller="BarberAdmin" asp-action="Details" asp-route-id="@barber.Id" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

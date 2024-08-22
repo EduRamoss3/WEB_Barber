@@ -238,7 +238,7 @@ namespace Barber.UI.Services
         public async Task<HttpStatusCode> UpdateAsync(SchedulesDTO scheduleDTO, int? id, string token)
         {
             PutTokenInHeadersAuthorization(token, client);
-            var itemSerialized = JsonSerializer.Serialize(scheduleDTO);
+            var itemSerialized = JsonSerializer.Serialize(scheduleDTO, _options);
             StringContent content = new(itemSerialized, Encoding.UTF8, "application/json");
 
             using (var response = await client.PutAsync(apiEndPoint + $"{id.Value}", content))

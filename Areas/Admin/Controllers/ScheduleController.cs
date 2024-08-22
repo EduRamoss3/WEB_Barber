@@ -1,4 +1,5 @@
-﻿using Barber.UI.Entities.DTO;
+﻿using Barber.UI.Areas.Admin.Models;
+using Barber.UI.Entities.DTO;
 using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
@@ -36,7 +37,7 @@ namespace Barber.UI.Areas.Admin.Controllers
         }
         protected string GetUserRoleFromToken()
         {
-           
+
             if (HttpContext.Request.Cookies.ContainsKey("X-Access-Token"))
             {
                 var token = HttpContext.Request.Cookies["X-Access-Token"];
@@ -48,6 +49,14 @@ namespace Barber.UI.Areas.Admin.Controllers
             }
 
             return null;
+        }
+        private async Task<BarbersAndClientsModel> GetBarbersAndClients()
+        {
+            ParametersToPagination parameters = new(200, 1);
+            var barbeiros = await _barberService.GetAllAsync(parameters, TokenJwt());
+            var clientes = await _clientService.GetAllAsync(parameters, TokenJwt());
+            BarbersAndClientsModel barbersAndClientsModel = new BarbersAndClientsModel(barbeiros.Objects, clientes.Objects);
+            return barbersAndClientsModel;
         }
         [Route("All")]
         [HttpGet]
@@ -64,10 +73,11 @@ namespace Barber.UI.Areas.Admin.Controllers
                 parameters.PageSize = 30;
                 var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
 
-                if (response.RequestUri.AbsolutePath.Contains("Account/Login")){
+                if (response.RequestUri.AbsolutePath.Contains("Account/Login"))
+                {
                     return Redirect($"{response.RequestUri.AbsolutePath}");
                 }
-               
+
                 return View(response.Objects);
             }
             catch (HttpRequestException)
@@ -81,6 +91,8 @@ namespace Barber.UI.Areas.Admin.Controllers
                 return View("Error");
             }
         }
+
+
         [Route("Index")]
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -154,7 +166,7 @@ namespace Barber.UI.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteInformation(int id)
         {
             var schedules = await _scheduleServices.GetByIdAsync(id, TokenJwt());
-            if(schedules.OneObject is not null)
+            if (schedules.OneObject is not null)
             {
                 return View(schedules.OneObject);
             }
@@ -186,15 +198,13 @@ namespace Barber.UI.Areas.Admin.Controllers
         {
             return View();
         }
+
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            ParametersToPagination parameters = new(200,1);
-            var barbeiros = await _barberService.GetAllAsync(parameters, TokenJwt());
-            var clientes = await _clientService.GetAllAsync(parameters, TokenJwt());
-
-            ViewBag.Barbeiros = new SelectList(barbeiros.Objects,"Id","Name");
-            ViewBag.Clientes = new SelectList(clientes.Objects, "Id", "Name");
+            var items = await GetBarbersAndClients();
+            ViewBag.Barbeiros = new SelectList(items.Barbers, "Id", "Name");
+            ViewBag.Clientes = new SelectList(items.Clients, "Id", "Name");
             return View();
         }
         [HttpPost]
@@ -214,6 +224,62 @@ namespace Barber.UI.Areas.Admin.Controllers
             ModelState.AddModelError("Error", "Verifique todos os campos e tente novamente!");
             return View(DTO);
         }
+        [HttpGet]
+        public async Task<IActionResult> Details(int idSchedule)
+        {
+            var responseApi = await _scheduleServices.GetByIdAsync(idSchedule, TokenJwt());
+            if (responseApi.StatusCode == HttpStatusCode.OK)
+            {
+                if (responseApi.OneObject is null)
+                {
+                    TempData["Erro"] = "Agendamento não encontrado!";
+                    return View("Error");
+                }
+                return View(responseApi.OneObject);
+            }
+            TempData["Erro"] = "Erro na requisição";
+            return View("Error");
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int idSchedule)
+        {
+            var responseApi = await _scheduleServices.GetByIdAsync(idSchedule, TokenJwt());
+            if (responseApi.StatusCode == HttpStatusCode.OK)
+            {
+                if (responseApi.OneObject is null)
+                {
+                    TempData["Erro"] = "Agendamento não encontrado!";
+                    return View("Error");
+                }
+
+                var items = await GetBarbersAndClients();
+
+                ViewBag.Barbeiros = new SelectList(items.Barbers, "Id", "Name");
+                ViewBag.Clientes = new SelectList(items.Clients, "Id", "Name");
+                return View(responseApi.OneObject);
+            }
+            TempData["Erro"] = "Erro na requisição";
+            return View("Error");
+        }
+        [HttpPost]
+        public async Task<ActionResult<SchedulesDTO>> Edit(SchedulesDTO schedulesDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var apiResponse = await _scheduleServices.UpdateAsync(schedulesDTO, schedulesDTO.Id, TokenJwt());
+                if (apiResponse.Equals(HttpStatusCode.OK) || apiResponse.Equals(HttpStatusCode.Created))
+                {
+                    TempData["Success"] = "Agendamento atualizado com sucesso!";
+                    return RedirectToAction("Index");
+                }
+                TempData["Erro"] = "Erro na requisição";
+                return View("Error");
+
+            }
+            ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
+            return View(schedulesDTO);
+        }
+
         [HttpGet]
         public IActionResult AccessDenied()
         {

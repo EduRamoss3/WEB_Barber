@@ -1,0 +1,30 @@
+﻿@model List<Barber.UI.Entities.DTO.ClientDTO>
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12 text-center mb-4">
+            <h2 class="fw-bold">Gerenciamento de Clientes</h2>
+        </div>
+    </div>
+    <div class="list-group">
+        @foreach (var client in Model)
+        {
+            <div class="list-group-item list-group-item-action d-flex align-items-center">
+                <img src="~/Images/do-utilizador.png" class="rounded-circle me-3" alt="User Icon" style="width: 50px; height: 50px;">
+                <div class="flex-grow-1">
+                    <h5 class="mb-1">@client.Name</h5>
+                    <p class="mb-0">
+                        <strong>Última visita:</strong> @client.LastTimeHere.ToString("dd/MM/yyyy HH:mm")
+                        <br />
+                        <strong>Status:</strong> @(client.Scheduled ? "Agendado" : "Não agendado")
+                    </p>
+                </div>
+                <div class="text-end">
+                    <a href="#" class="btn btn-outline-primary btn-sm me-2">Ver detalhes</a>
+                    <a href="#" class="btn btn-outline-secondary btn-sm">Editar</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
