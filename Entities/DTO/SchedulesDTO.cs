@@ -15,7 +15,7 @@ namespace Barber.UI.Entities.DTO
 
         [Required(ErrorMessage = "ID Client is required!")]
         [DisplayName("Cliente")]
-        public int IdClient { get; init; }
+        public int IdClient { get; set; }
 
         [DisplayName("Serviço")]
         [Required(ErrorMessage = "Type of service is required!")]

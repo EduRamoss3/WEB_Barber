@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model RegisterViewModel
 
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="box-shadow p-5 rounded-3 bg-light" style="max-width: 400px; width: 100%;">
@@ -30,6 +30,9 @@
 
             <div class="text-center mt-3">
                 <a href="@Url.Action("ForgotPassword", "Account")" class="text-decoration-none">Esqueceu sua senha?</a>
+            </div>
+            <div class="text-center mt-3">
+                <a asp-controller="Account" asp-action="Register">Registre-se</a>
             </div>
         </form>
     </div>

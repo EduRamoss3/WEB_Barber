@@ -2,20 +2,25 @@
 
 @{
     ViewData["Title"] = "Login";
-    var session = HttpContextAccessor.HttpContext.Session.GetString("Logged");
-    bool parsed = false;
-    if (session is not null)
-    {
-        parsed = bool.Parse(session);
-    }
+    var session = HttpContextAccessor.HttpContext.Session.GetString("Logged");  
 }
 
-@if (!parsed)
+@if(session is not null)
+{
+    @if (session.Equals("false"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-light" asp-controller="Account" asp-action="Register">Registre-se</a>
+        </li>
+    }
+}
+else if(session is null)
 {
     <li class="nav-item">
         <a class="nav-link text-light" asp-controller="Account" asp-action="Register">Registre-se</a>
     </li>
 }
+
 
 
 

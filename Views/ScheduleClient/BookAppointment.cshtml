@@ -1,0 +1,79 @@
+﻿@using Barber.UI.Entities.DTO
+@model SchedulesDTO
+
+@{
+    ViewData["Title"] = "Adicionar Agendamento";
+}
+@if (TempData["Erro"] is not null)
+{
+    <h1 class="text-danger">@TempData["Erro"]</h1>
+}
+<div class="container mt-5">
+    <h2>@ViewData["Title"]</h2>
+    <form asp-controller="ScheduleClient" asp-action="BookAppointment" method="post">
+        <div class="mb-3">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <label asp-for="IdBarber" class="form-label"></label>
+            <select asp-for="IdBarber" class="form-control" asp-items="@ViewBag.Barbeiros"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TypeOfService" class="form-label"></label>
+            <select asp-for="TypeOfService" class="form-select">
+                <option value="1">Normal</option>
+                <option value="2">Degradê</option>
+                <option value="3">Degradê e Barba</option>
+                <option value="4">Barba</option>
+                <option value="5">Coloração</option>
+                <option value="6">Coloração da Barba e Corte normal</option>
+                <option value="7">Coloração geral e Degradê</option>
+                <option value="8">Coloração e CorteNormal</option>
+                <option value="9">Coloração da Barba e Degradê</option>
+                <option value="10">Somente lavagem</option>
+                <option value="11">Depilação</option>
+            </select>
+            <span asp-validation-for="TypeOfService" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="DateSchedule" class="form-label"></label>
+            <input asp-for="DateSchedule" class="form-control" type="datetime-local" step="1800" />
+            <span asp-validation-for="DateSchedule" class="text-danger"></span>
+        </div>
+
+
+        <div class="mb-3">
+            <label asp-for="ValueForService" class="form-label"></label>
+            <input asp-for="ValueForService" class="form-control" placeholder="Digite o valor do serviço" />
+            <span asp-validation-for="ValueForService" class="text-danger"></span>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="IsFinalized" class="form-check-input" type="checkbox" />
+            <label asp-for="IsFinalized" class="form-check-label"></label>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar Agendamento</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script>
+    document.querySelector('[type="datetime-local"]').addEventListener('change', function () {
+        var dateInput = this.value;
+        var date = new Date(dateInput);
+        var minutes = date.getMinutes();
+
+        if (minutes % 30 !== 0) {
+            // Ajustar para o próximo intervalo de 30 minutos
+            if (minutes < 30) {
+                date.setMinutes(30);
+            } else {
+                date.setMinutes(0);
+                date.setHours(date.getHours() + 1);
+            }
+            this.value = date.toISOString().slice(0, 16);
+            alert('Por favor, selecione um horário em intervalos de 30 minutos.');
+        }
+    });
+</script>

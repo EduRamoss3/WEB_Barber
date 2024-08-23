@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model RegisterViewModel
 
 <div class="container-body">
     <aside class="second-side">
@@ -28,6 +28,7 @@
                         <input type="email" asp-for="Email" class="form-control" placeholder="email@exemplo.com" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
+
                     <div class="mb-3">
                         <label asp-for="Password" class="form-label">Senha</label>
                         <input type="password" asp-for="Password" class="form-control" placeholder="Digite sua senha aqui" />
@@ -38,6 +39,11 @@
                         <label asp-for="ConfirmPassword" class="form-label">Confirme a senha</label>
                         <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Digite sua senha aqui" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Nome</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">

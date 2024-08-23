@@ -1,12 +1,15 @@
 ﻿using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
+using System.Text.Json;
 
 namespace Barber.UI.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IAuthenticate _authenticate;
+        private string token = string.Empty;
         public AccountController(IAuthenticate authenticate)
         {
             _authenticate = authenticate;
@@ -15,11 +18,17 @@ namespace Barber.UI.Controllers
         {
             return View();
         }
+        private string TokenJwt()
+        {
+            if (HttpContext.Request.Cookies.ContainsKey("X-Access-Token"))
+            {
+                token = HttpContext.Request.Cookies["X-Access-Token"].ToString();
+            }
+            return token;
+        }
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            bool isLogged = false;
-
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
@@ -36,22 +45,39 @@ namespace Barber.UI.Controllers
                     Expires = result.Expiration,
                 });
 
-                isLogged = true;
-                HttpContext.Session.SetString("Logged", isLogged.ToString());
+                
+                HttpContext.Session.SetString("Email", model.Email);
+                HttpContext.Session.SetString("Logged", "true");
+                HttpContext.Session.SetString("Role", result.Role);
 
                 return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
-            HttpContext.Session.SetString("Logged", isLogged.ToString());
+            HttpContext.Session.SetString("Logged", "false");
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _authenticate.Logout(TokenJwt());
+            if (result == System.Net.HttpStatusCode.OK)
+            {
+                HttpContext.Session.Remove("Logged");
+                HttpContext.Session.Remove("Email");
+                HttpContext.Session.Remove("Role");
+                Response.Cookies.Delete("X-Access-Token");
+                return RedirectToAction("Index", "Home");
+            }
+            ViewBag.Erro = "Erro ao realizar logout";
+            return View("Erro");
         }
         public IActionResult Register()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(LoginViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -61,7 +87,7 @@ namespace Barber.UI.Controllers
             var result = await _authenticate.Register(model);
             if (result.IsSuccessStatusCode)
             {
-                return View("Index", "Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {

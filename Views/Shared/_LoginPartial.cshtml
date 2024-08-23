@@ -3,11 +3,6 @@
 @{
     ViewData["Title"] = "Login";
     var session = HttpContextAccessor.HttpContext.Session.GetString("Logged");
-    bool parsed = false;
-    if (session is not null)
-    {
-        parsed = bool.Parse(session);
-    }
 }
 <style>
     .no-marker {
@@ -20,14 +15,23 @@
         list-style: none;
     }
 </style>
-@if (parsed)
+@if(session is not null)
 {
+    @if (session.Equals("true"))
+    {
 
-    <li class="nav-item text-light text-decoration-none no-marker">Seja bem-vindo!</li>
+        <li class="nav-item text-light">
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="nav-link btn btn-link text-light p-0">Logout</button>
+            </form>
+        </li>
+       
+    } 
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-light"  asp-controller="Account" asp-action="Login">Login</a>
+        <a class="nav-link text-light" asp-controller="Account" asp-action="Login">Login</a>
     </li>
 }
+

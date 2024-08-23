@@ -27,7 +27,7 @@ namespace Barber.UI.Services.Interfaces
 
         Task<bool> OpenServiceAsync(int id, string token);
 
-        Task<ObjectResponse<List<DateTime>>> GetByDateDisponible(int idBarber, DateTime dateTimeSearch, string token);
+        Task<bool> GetByDateDisponible(int idBarber, DateTime dateTimeSearch, string token);
 
         Task<ObjectResponse<SchedulesDTO>> GetWithDataAsync(string token);
     }

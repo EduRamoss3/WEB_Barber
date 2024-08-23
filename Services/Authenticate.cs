@@ -1,6 +1,7 @@
 ﻿using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -25,7 +26,12 @@ namespace Barber.UI.Services
             _client = _httpClientFactory.CreateClient("API_Barber");
         }
 
-        public async Task<HttpResponseMessage> Register(LoginViewModel model)
+        private static void PutTokenInHeadersAuthorization(string token, HttpClient client)
+        {
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        public async Task<HttpResponseMessage> Register(RegisterViewModel model)
         {
             
             var json = JsonSerializer.Serialize(model);
@@ -62,6 +68,15 @@ namespace Barber.UI.Services
                 {
                     return null;
                 }
+            }
+        }
+
+        public async Task<HttpStatusCode> Logout(string token)
+        {
+            PutTokenInHeadersAuthorization(token, _client);
+            using (var response = await _client.PostAsync(apiEndPoint + "logout", null))
+            {
+                return response.StatusCode;
             }
         }
     }

@@ -19,10 +19,12 @@
                         <br />
                         <strong>Status:</strong> @(client.Scheduled ? "Agendado" : "Não agendado")
                     </p>
+                    <p class="mb-0"><strong>Email:</strong> @client.Email</p>
                 </div>
                 <div class="text-end">
-                    <a href="#" class="btn btn-outline-primary btn-sm me-2">Ver detalhes</a>
-                    <a href="#" class="btn btn-outline-secondary btn-sm">Editar</a>
+                    <a asp-area="Admin" asp-controller="Cliente" asp-action="Details" asp-route-id="@client.Id" class="btn btn-outline-primary btn-sm me-2">Ver detalhes</a>
+                    <a asp-area="Admin" asp-controller="Cliente" asp-action="Edit" asp-route-id="@client.Id" class="btn btn-outline-secondary btn-sm">Editar</a>
+                    <a asp-area="Admin" asp-controller="Cliente" asp-action="DeleteInformation" asp-route-id="@client.Id" class="btn btn-outline-danger btn-sm">Deletar</a>
                 </div>
             </div>
         }

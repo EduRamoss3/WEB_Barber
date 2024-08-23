@@ -1,14 +1,11 @@
 ﻿using Barber.UI.Areas.Admin.Models;
 using Barber.UI.Entities.DTO;
-using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net;
-using System.Net.Sockets;
 using System.Security.Claims;
 
 namespace Barber.UI.Areas.Admin.Controllers
@@ -19,7 +16,8 @@ namespace Barber.UI.Areas.Admin.Controllers
         private readonly IScheduleServices _scheduleServices;
         private readonly IBarberService _barberService;
         private readonly IClienteService _clientService;
-        string token = string.Empty;
+        private const string TokenCookieName = "X-Access-Token";
+
 
         public ScheduleController(IScheduleServices scheduleServices, IBarberService barberService, IClienteService clientService)
         {
@@ -27,56 +25,62 @@ namespace Barber.UI.Areas.Admin.Controllers
             _barberService = barberService;
             _clientService = clientService;
         }
-        private string TokenJwt()
-        {
-            if (HttpContext.Request.Cookies.ContainsKey("X-Access-Token"))
-            {
-                token = HttpContext.Request.Cookies["X-Access-Token"].ToString();
-            }
-            return token;
-        }
-        protected string GetUserRoleFromToken()
-        {
 
-            if (HttpContext.Request.Cookies.ContainsKey("X-Access-Token"))
+        private string GetTokenFromCookie()
+        {
+            return HttpContext.Request.Cookies.ContainsKey(TokenCookieName) ? HttpContext.Request.Cookies[TokenCookieName] : string.Empty;
+        }
+
+        private string GetUserRoleFromToken()
+        {
+            var token = GetTokenFromCookie();
+            if (!string.IsNullOrEmpty(token))
             {
-                var token = HttpContext.Request.Cookies["X-Access-Token"];
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(token);
                 var roleClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
-
                 return roleClaim;
             }
+            return null;
+        }
+
+        private async Task<BarbersAndClientsModel> FetchBarbersAndClientsAsync()
+        {
+            ParametersToPagination parameters = new(200, 1);
+            var barbeiros = await _barberService.GetAllAsync(parameters, GetTokenFromCookie());
+            var clientes = await _clientService.GetAllAsync(parameters, GetTokenFromCookie());
+            return new BarbersAndClientsModel(barbeiros.Objects, clientes.Objects);
+        }
+
+        private IActionResult HandleUnauthorizedOrForbidden(HttpStatusCode statusCode)
+        {
+            if (statusCode == HttpStatusCode.Forbidden)
+                return RedirectToAction("AccessDenied", "Home", new { area = "" });
+
+            if (statusCode == HttpStatusCode.Unauthorized)
+                return RedirectToAction("Login", "Account", new { area = "" });
 
             return null;
         }
-        private async Task<BarbersAndClientsModel> GetBarbersAndClients()
-        {
-            ParametersToPagination parameters = new(200, 1);
-            var barbeiros = await _barberService.GetAllAsync(parameters, TokenJwt());
-            var clientes = await _clientService.GetAllAsync(parameters, TokenJwt());
-            BarbersAndClientsModel barbersAndClientsModel = new BarbersAndClientsModel(barbeiros.Objects, clientes.Objects);
-            return barbersAndClientsModel;
-        }
+
         [Route("All")]
         [HttpGet]
         public async Task<IActionResult> All(ParametersToPagination parameters)
         {
             try
             {
-                var userRole = GetUserRoleFromToken();
-                if (userRole.Equals("Member"))
+                if (GetUserRoleFromToken() == "Member")
                 {
                     return RedirectToAction("Index", "Home");
                 }
+
                 parameters.PageNumber = 1;
                 parameters.PageSize = 30;
-                var response = await _scheduleServices.GetAllAsync(parameters, TokenJwt());
+                var response = await _scheduleServices.GetAllAsync(parameters, GetTokenFromCookie());
 
-                if (response.RequestUri.AbsolutePath.Contains("Account/Login"))
-                {
-                    return Redirect($"{response.RequestUri.AbsolutePath}");
-                }
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response.StatusCode);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
 
                 return View(response.Objects);
             }
@@ -85,13 +89,7 @@ namespace Barber.UI.Areas.Admin.Controllers
                 TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
                 return View("Error");
             }
-            catch (SocketException)
-            {
-                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View("Error");
-            }
         }
-
 
         [Route("Index")]
         [HttpGet]
@@ -99,16 +97,12 @@ namespace Barber.UI.Areas.Admin.Controllers
         {
             try
             {
-                var response = await _scheduleServices.GetWithDataAsync(TokenJwt());
+                var response = await _scheduleServices.GetWithDataAsync(GetTokenFromCookie());
 
-                if (response.RequestUri.AbsolutePath.Contains("Account/Login"))
-                {
-                    return Redirect($"{response.RequestUri.AbsolutePath}");
-                }
-                if (response.StatusCode == HttpStatusCode.BadRequest || response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response.StatusCode);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
+
                 return View(response.Objects);
             }
             catch (HttpRequestException)
@@ -116,77 +110,71 @@ namespace Barber.UI.Areas.Admin.Controllers
                 TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
                 return View("Error");
             }
-            catch (SocketException)
-            {
-                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View("Error");
-            }
         }
 
-
-        [Route("Search")]
         [HttpGet]
-        public IActionResult Search()
-        {
-            return View();
-        }
-        [HttpGet]
-        public async Task<ActionResult<List<SchedulesDTO>>> GetByClientId(int clientId)
+        public async Task<IActionResult> GetByClientId(int clientId)
         {
             try
             {
-                var objectResponse = await _scheduleServices.GetByClientIdAsync(clientId, TokenJwt());
-                if (objectResponse is null)
+                var response = await _scheduleServices.GetByClientIdAsync(clientId, GetTokenFromCookie());
+
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response.StatusCode);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
+
+                if (response.Objects.Any())
                 {
-                    return View("Error");
+                    return View(response.Objects);
                 }
-                else if (objectResponse.StatusCode == HttpStatusCode.OK)
-                {
-                    if (objectResponse.Objects.Count > 0)
-                    {
-                        return View(objectResponse.Objects);
-                    }
-                }
-                TempData["Error"] = objectResponse.Message;
+
+                TempData["Erro"] = response.Message ?? "Erro ao buscar agendamentos.";
                 return View("Error");
             }
             catch (HttpRequestException)
             {
                 TempData["Erro"] = "Erro interno, por favor, comunique ao suporte";
-                return View("Error", TempData);
+                return View("Error");
             }
+        }
 
-        }
-        [HttpGet]
-        public IActionResult Delete()
-        {
-            return View();
-        }
         [HttpGet]
         public async Task<IActionResult> DeleteInformation(int id)
         {
-            var schedules = await _scheduleServices.GetByIdAsync(id, TokenJwt());
-            if (schedules.OneObject is not null)
+            var response = await _scheduleServices.GetByIdAsync(id, GetTokenFromCookie());
+
+            var unauthorizedResponse = HandleUnauthorizedOrForbidden(response.StatusCode);
+            if (unauthorizedResponse != null)
+                return unauthorizedResponse;
+
+            if (response.OneObject != null)
             {
-                return View(schedules.OneObject);
+                return View(response.OneObject);
             }
-            TempData["Error"] = "Erro ao encontrar o agendamento";
+
+            TempData["Erro"] = "Erro ao encontrar o agendamento";
             return View("Error");
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var service = await _scheduleServices.RemoveAsync(id, TokenJwt());
-                if (service.Equals(HttpStatusCode.NotFound) || service.Equals(HttpStatusCode.BadRequest))
-                {
-                    TempData["Erro"] = "Agendamento não existe ou você não tem permissão necessária.";
-                    return View("Error");
-                }
-                TempData["Success"] = "Agendamento removido com sucesso!";
-                return RedirectToAction("Index");
+                var response = await _scheduleServices.RemoveAsync(id, GetTokenFromCookie());
 
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
+
+                if (response == HttpStatusCode.OK)
+                {
+                    TempData["Success"] = "Agendamento removido com sucesso!";
+                    return RedirectToAction("Index");
+                }
+
+                TempData["Erro"] = "Erro ao remover o agendamento.";
+                return View("Error");
             }
             catch (Exception)
             {
@@ -194,90 +182,85 @@ namespace Barber.UI.Areas.Admin.Controllers
                 return View("Error");
             }
         }
-        public IActionResult Error()
-        {
-            return View();
-        }
 
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            var items = await GetBarbersAndClients();
+            var items = await FetchBarbersAndClientsAsync();
             ViewBag.Barbeiros = new SelectList(items.Barbers, "Id", "Name");
             ViewBag.Clientes = new SelectList(items.Clients, "Id", "Name");
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> Add(SchedulesDTO DTO)
+        public async Task<IActionResult> Add(SchedulesDTO dto)
         {
             if (ModelState.IsValid)
             {
-                var response = await _scheduleServices.AddAsync(DTO, TokenJwt());
-                if (response.Equals(HttpStatusCode.Created))
+                var response = await _scheduleServices.AddAsync(dto, GetTokenFromCookie());
+
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
+
+                if (response == HttpStatusCode.Created)
                 {
                     TempData["Success"] = "Agendamento adicionado com sucesso!";
                     return RedirectToAction("Index");
                 }
-                TempData["Erro"] = "Ocorreu um erro na requisição, por favor, contate o suporte.";
-                return View(DTO);
+
+                TempData["Erro"] = "Erro ao adicionar o agendamento.";
+                return View(dto);
             }
-            ModelState.AddModelError("Error", "Verifique todos os campos e tente novamente!");
-            return View(DTO);
+
+            ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
+            return View(dto);
         }
-        [HttpGet]
-        public async Task<IActionResult> Details(int idSchedule)
-        {
-            var responseApi = await _scheduleServices.GetByIdAsync(idSchedule, TokenJwt());
-            if (responseApi.StatusCode == HttpStatusCode.OK)
-            {
-                if (responseApi.OneObject is null)
-                {
-                    TempData["Erro"] = "Agendamento não encontrado!";
-                    return View("Error");
-                }
-                return View(responseApi.OneObject);
-            }
-            TempData["Erro"] = "Erro na requisição";
-            return View("Error");
-        }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int idSchedule)
         {
-            var responseApi = await _scheduleServices.GetByIdAsync(idSchedule, TokenJwt());
-            if (responseApi.StatusCode == HttpStatusCode.OK)
+            var response = await _scheduleServices.GetByIdAsync(idSchedule, GetTokenFromCookie());
+
+            var unauthorizedResponse = HandleUnauthorizedOrForbidden(response.StatusCode);
+            if (unauthorizedResponse != null)
+                return unauthorizedResponse;
+
+            if (response.OneObject == null)
             {
-                if (responseApi.OneObject is null)
-                {
-                    TempData["Erro"] = "Agendamento não encontrado!";
-                    return View("Error");
-                }
-
-                var items = await GetBarbersAndClients();
-
-                ViewBag.Barbeiros = new SelectList(items.Barbers, "Id", "Name");
-                ViewBag.Clientes = new SelectList(items.Clients, "Id", "Name");
-                return View(responseApi.OneObject);
+                TempData["Erro"] = "Agendamento não encontrado!";
+                return View("Error");
             }
-            TempData["Erro"] = "Erro na requisição";
-            return View("Error");
+
+            var items = await FetchBarbersAndClientsAsync();
+            ViewBag.Barbeiros = new SelectList(items.Barbers, "Id", "Name");
+            ViewBag.Clientes = new SelectList(items.Clients, "Id", "Name");
+            return View(response.OneObject);
         }
+
         [HttpPost]
-        public async Task<ActionResult<SchedulesDTO>> Edit(SchedulesDTO schedulesDTO)
+        public async Task<IActionResult> Edit(SchedulesDTO dto)
         {
             if (ModelState.IsValid)
             {
-                var apiResponse = await _scheduleServices.UpdateAsync(schedulesDTO, schedulesDTO.Id, TokenJwt());
-                if (apiResponse.Equals(HttpStatusCode.OK) || apiResponse.Equals(HttpStatusCode.Created))
+                var response = await _scheduleServices.UpdateAsync(dto, dto.Id, GetTokenFromCookie());
+
+                var unauthorizedResponse = HandleUnauthorizedOrForbidden(response);
+                if (unauthorizedResponse != null)
+                    return unauthorizedResponse;
+
+                if (response == HttpStatusCode.OK || response == HttpStatusCode.Created)
                 {
                     TempData["Success"] = "Agendamento atualizado com sucesso!";
                     return RedirectToAction("Index");
                 }
-                TempData["Erro"] = "Erro na requisição";
-                return View("Error");
 
+                TempData["Erro"] = "Erro ao atualizar o agendamento.";
+                return View("Error");
             }
+
             ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
-            return View(schedulesDTO);
+            return View(dto);
         }
 
         [HttpGet]

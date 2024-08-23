@@ -202,27 +202,7 @@ namespace Barber.UI.Services
             }
         }
 
-        public async Task<ObjectResponse<List<DateTime>>> GetByDateDisponible(int barberId, DateTime dateSearch, string token)
-        {
-            PutTokenInHeadersAuthorization(token, client);
-            var parameterId = JsonSerializer.Serialize(barberId);
-            var parameterDate = JsonSerializer.Serialize(dateSearch);
-
-            ObjectResponse<List<DateTime>> _objectResponse = new();
-            using (var response = await client.GetAsync(apiEndPoint + $"barbers/{parameterId}/availability/{parameterDate}"))
-            {
-                _objectResponse.StatusCode = response.StatusCode;
-                _objectResponse.Message = response.ReasonPhrase;
-                if (response.IsSuccessStatusCode)
-                {
-                    var apiResponse = await response.Content.ReadAsStreamAsync();
-                    var itemDeserialized = await JsonSerializer.DeserializeAsync<List<DateTime>>(apiResponse, _options);
-                    _objectResponse.OneObject = itemDeserialized;
-                }
-                return _objectResponse;
-
-            }
-        }
+       
 
         public async Task<HttpStatusCode> RemoveAsync(int? id, string token)
         {
@@ -265,6 +245,24 @@ namespace Barber.UI.Services
             {
                 return response.StatusCode;
             }
+        }
+
+        public async Task<bool> GetByDateDisponible(int idBarber, DateTime dateTimeSearch, string token)
+        {
+            PutTokenInHeadersAuthorization(token, client);
+            var parameterId = JsonSerializer.Serialize(idBarber);
+            var parameterDate = dateTimeSearch.ToString("dd-MM-yyyy HH:mm");
+
+            using (var response = await client.GetAsync(apiEndPoint + $"barbers/{parameterId}/availability/{parameterDate}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<bool>(apiResponse);
+                    return itemDeserialized;
+                }
+            }
+            return false;
         }
     }
 }

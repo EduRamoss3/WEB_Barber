@@ -1,10 +1,7 @@
-﻿using Barber.UI.Entities.DTO;
-using Barber.UI.Entities.Register;
-using Barber.UI.Entities.Responses;
+﻿using Barber.UI.Entities.Register;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using NuGet.Common;
 using System.Net;
 
 namespace Barber.UI.Areas.Admin.Controllers
@@ -27,6 +24,16 @@ namespace Barber.UI.Areas.Admin.Controllers
             }
             return token;
         }
+        private IActionResult HandleUnauthorizedOrForbidden(HttpStatusCode statusCode)
+        {
+            if (statusCode == HttpStatusCode.Forbidden)
+                return RedirectToAction("AccessDenied", "Home", new { area = "" });
+
+            if (statusCode == HttpStatusCode.Unauthorized)
+                return RedirectToAction("Login", "Account", new { area = "" });
+
+            return null;
+        }
 
         public IActionResult Index()
         {
@@ -42,12 +49,17 @@ namespace Barber.UI.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-               var result = await _barberService.AddAsync(DTO,TokenJwt());
-               if(result.StatusCode == HttpStatusCode.OK || result.StatusCode == HttpStatusCode.Created)
-               {
+                var result = await _barberService.AddAsync(DTO, TokenJwt());
+                var apiResponse = HandleUnauthorizedOrForbidden(result.StatusCode);
+                if (apiResponse != null)
+                {
+                    return apiResponse;
+                }
+                if (result.StatusCode == HttpStatusCode.OK || result.StatusCode == HttpStatusCode.Created)
+                {
                     TempData["Success"] = "Adicionado com sucesso!";
                     return View("Index");
-               }
+                }
                 ViewBag.Erro = "Erro ao cadastrar barbeiro!";
                 return View("Error");
             }
@@ -57,15 +69,17 @@ namespace Barber.UI.Areas.Admin.Controllers
         }
         public IActionResult GetById()
         {
-            return View();   
+            return View();
         }
 
 
-        public async Task<ActionResult<ObjectResponse<BarberDTO>>> GetById(int idBarber)
+        public async Task<IActionResult> GetById(int idBarber)
         {
             if (ModelState.IsValid)
             {
                 var result = await _barberService.GetById(idBarber, TokenJwt());
+                var apiResponse = HandleUnauthorizedOrForbidden(result.StatusCode);
+                if(apiResponse != null) { return apiResponse; }
                 if (result.StatusCode == HttpStatusCode.OK)
                 {
                     return View("GetById", result);
@@ -74,11 +88,15 @@ namespace Barber.UI.Areas.Admin.Controllers
             }
             return View();
         }
-        public async Task<ActionResult<List<BarberDTO>>> Barbers(ParametersToPagination parametersToPagination)
+        public async Task<IActionResult> Barbers(ParametersToPagination parametersToPagination)
         {
             parametersToPagination.PageNumber = 1;
             parametersToPagination.PageSize = 200;
-            var responseApi = await _barberService.GetAllAsync(parametersToPagination,TokenJwt());
+            var responseApi = await _barberService.GetAllAsync(parametersToPagination, TokenJwt());
+
+            var apiResponse = HandleUnauthorizedOrForbidden(responseApi.StatusCode);
+            if (apiResponse != null) { return apiResponse; }
+
             if (responseApi.StatusCode == HttpStatusCode.OK)
             {
                 return View(responseApi.Objects);
@@ -89,11 +107,14 @@ namespace Barber.UI.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteInformation(int id)
         {
-          
-            var barber = await _barberService.GetById(id, TokenJwt());
-            if (barber.OneObject is not null)
+
+            var responseApi = await _barberService.GetById(id, TokenJwt());
+
+            var apiResponse = HandleUnauthorizedOrForbidden(responseApi.StatusCode);
+            if (apiResponse != null) { return apiResponse; }
+            if (responseApi.OneObject is not null)
             {
-                return View(barber.OneObject);
+                return View(responseApi.OneObject);
             }
             TempData["Error"] = "Erro ao encontrar o barbeiro";
             return View("Error");
@@ -104,6 +125,9 @@ namespace Barber.UI.Areas.Admin.Controllers
             try
             {
                 var service = await _barberService.RemoveByIdAsync(id, TokenJwt());
+
+                var apiResponse = HandleUnauthorizedOrForbidden(service.StatusCode);
+                if (apiResponse != null) { return apiResponse; }
                 if (service.Equals(HttpStatusCode.NotFound) || service.Equals(HttpStatusCode.BadRequest))
                 {
                     TempData["Erro"] = "Agendamento não existe ou você não tem permissão necessária.";
@@ -146,9 +170,9 @@ namespace Barber.UI.Areas.Admin.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var apiResponse = await _barberService.GetById(id, TokenJwt());
-            if(apiResponse.StatusCode == HttpStatusCode.OK)
+            if (apiResponse.StatusCode == HttpStatusCode.OK)
             {
-                if(apiResponse.OneObject is null)
+                if (apiResponse.OneObject is null)
                 {
                     TempData["Erro"] = "Ocorreu um erro durante a sua requisição.";
                     return View("Error");
@@ -164,6 +188,6 @@ namespace Barber.UI.Areas.Admin.Controllers
         {
             return View();
         }
-        
+
     }
 }

@@ -33,8 +33,10 @@ namespace Barber.UI.Services
         {
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
-        public async Task<bool> AddAsync(ClientRegisterDTO clientDTO)
+        public async Task<bool> AddAsync(ClientRegisterDTO clientDTO, string token)
         {
+            PutTokenInHeadersAuthorization(token, client);
+
             var itemSerialized = JsonSerializer.Serialize(clientDTO);
             StringContent content = new StringContent(itemSerialized, Encoding.UTF8, "application/json");
 
@@ -69,8 +71,10 @@ namespace Barber.UI.Services
                 
             }
         }
-        public async Task<ObjectResponse<ClientDTO>> GetByIdAsync(int id)
+        public async Task<ObjectResponse<ClientDTO>> GetByIdAsync(int id, string token)
         {
+            PutTokenInHeadersAuthorization(token, client);
+
             using var response = await client.GetAsync(apiEndPoint + id);
             {
                 ObjectResponse<ClientDTO> _objectResponse = new();
@@ -80,7 +84,7 @@ namespace Barber.UI.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStreamAsync();
-                    var DeserializerItem = JsonSerializer.Deserialize<ClientDTO>(content);
+                    var DeserializerItem = JsonSerializer.Deserialize<ClientDTO>(content, _options);
 
                     _objectResponse.OneObject = DeserializerItem;
                     _objectResponse.RequestUri = response.RequestMessage.RequestUri;
@@ -89,8 +93,25 @@ namespace Barber.UI.Services
             }
         }
 
-        public async Task<bool> RemoveAsync(int? id)
+        public async Task<int> GetIdByEmail(string email, string token)
         {
+            PutTokenInHeadersAuthorization(token, client);
+            using (var response = await client.GetAsync(apiEndPoint + $"Email/{email}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    var apiResponse = await response.Content.ReadAsStreamAsync();
+                    var itemDeserialized = await JsonSerializer.DeserializeAsync<int>(apiResponse, _options);
+                    return itemDeserialized;
+                }
+                return 0;
+            }
+        }
+
+        public async Task<bool> RemoveAsync(int? id, string token)
+        {
+            PutTokenInHeadersAuthorization(token, client);
+
             if (id.HasValue)
             {
                 using (var response = await client.DeleteAsync(apiEndPoint + id))
@@ -104,8 +125,10 @@ namespace Barber.UI.Services
             return false;
         }
 
-        public async Task<bool> UpdateAsync(ClientDTO clientDTO, int? id)
+        public async Task<bool> UpdateAsync(ClientDTO clientDTO, int? id, string token)
         {
+            PutTokenInHeadersAuthorization(token, client);
+
             var json = JsonSerializer.Serialize(clientDTO);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             
@@ -119,8 +142,10 @@ namespace Barber.UI.Services
             return false;
         }
 
-        public async Task<bool> UpdatePointsAsync(int id)
+        public async Task<bool> UpdatePointsAsync(int id, string token)
         {
+            PutTokenInHeadersAuthorization(token, client);
+
             var json = JsonSerializer.Serialize(id);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
