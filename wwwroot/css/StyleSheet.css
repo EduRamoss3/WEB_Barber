@@ -31,16 +31,13 @@ h2,h3 {
         text-align:justify;
     }
 .navbar, .footer {
-    background-color: #441e13;
+    background-color:gray;
     color: white;
 }
-.btn {
-    background-color: #f5ce6d;
-    border-color: white;
-    color: white;
-}
-.btn:hover {
-    background-color: #febf21;
+
+.btn-primary {
+    background-color: #343a40;
+    border-color: #343a40;
 }
 .nav-link:hover{
     color: wheat;
