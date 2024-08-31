@@ -38,5 +38,28 @@ namespace Barber.UI.Entities.DTO
 
         [DisplayName("Barbeiro")]
         public string BarberName { get; set; }
+
+
+        public SchedulesDTO()
+        {
+
+        }
+        public SchedulesDTO(int idBarber, int idClient, TypeOfService type, DateTime date, bool isFinalized)
+        {
+            IdBarber = idBarber;
+            IdClient = idClient;
+            TypeOfService = type;
+            DateSchedule = date;
+            ValueForService = CalcValueForService(type);
+            IsFinalized = isFinalized;
+        }
+        private decimal CalcValueForService(TypeOfService type)
+        {
+            if(type.ToString() == "Gradient")
+            {
+                return 45;
+            }
+            return 40;
+        }
     }
 }

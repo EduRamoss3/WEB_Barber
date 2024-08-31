@@ -111,7 +111,11 @@ namespace Barber.UI.Areas.Admin.Controllers
                 return View("Error");
             }
         }
-
+        [HttpGet]
+        public IActionResult Search()
+        {
+            return View();
+        }
         [HttpGet]
         public async Task<IActionResult> GetByClientId(int clientId)
         {
@@ -181,6 +185,11 @@ namespace Barber.UI.Areas.Admin.Controllers
                 TempData["Erro"] = "Erro na conexão, por favor consulte o suporte técnico.";
                 return View("Error");
             }
+        }
+        [HttpGet]
+        public IActionResult Delete()
+        {
+            return View();
         }
 
         [HttpGet]
@@ -262,7 +271,22 @@ namespace Barber.UI.Areas.Admin.Controllers
             ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
             return View(dto);
         }
-
+        [HttpGet]
+        public async Task<IActionResult> Details(int idSchedule)
+        {
+            var apiResponse = await _scheduleServices.GetByIdAsync(idSchedule, GetTokenFromCookie()); 
+            if(apiResponse.StatusCode == HttpStatusCode.OK)
+            {
+                if(apiResponse.OneObject is null)
+                {
+                    TempData["Erro"] = "Erro, não existe agendamento com esse identificador";
+                    return View("Error");
+                }
+                return View(apiResponse.OneObject);
+            }
+            TempData["Erro"] = "Erro na requisição, por favor, contate o suporte.";
+            return View("Error");
+        }
         [HttpGet]
         public IActionResult AccessDenied()
         {

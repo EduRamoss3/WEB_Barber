@@ -15,11 +15,11 @@
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor
 
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <!-- Branding -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img class="img" src="~/Images/dsd.png" />
+                <a class="navbar-brand text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="title">BARBER SHOP</span>
                 </a>
 
                 <!-- Toggler for mobile view -->
@@ -31,20 +31,34 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <!-- Centered Navbar Links -->
                     <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
+                      <li class="nav-item d-flex flex-column align-items-center">
+                         <img src="~/Images/casa.png" width="25px" alt="Home Icon" />
+                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                      </li>
+                      <li class="nav-item d-flex flex-column align-items-center">
+                         <img src="~/Images/sobre.png" width="25px" alt="sobre" />
+                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Sobre">Sobre</a>
+                      </li>
+                      <li class="nav-item d-flex flex-column align-items-center">
+                         <img src="~/Images/contato.png" width="25px" alt="contato" />
+                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Contato">Contato</a>
+                      </li>
+                      <li class="nav-item d-flex flex-column align-items-center">
+                         <img src="~/Images/mais.png" width="25px" alt="contato" />
+                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Mais">Mais</a>
+                      </li>
                         @if (_httpContextAccessor.HttpContext.Session.GetString("Role") is not null)
                         {
                             @if (_httpContextAccessor.HttpContext.Session.GetString("Role").Equals("Admin"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="Admin" asp-controller="Schedule" asp-action="Index">Área Admin</a>
+                                <li class="nav-item d-flex flex-column align-items-center">
+                                  <img src="~/Images/engrenagem.png" width="25px" alt="Admin Icon" />
+                                   <a class="nav-link mt-1" asp-area="Admin" asp-controller="Schedule" asp-action="Index">Área Admin</a>
                                 </li>
                             }
-
                         }
-                    </ul>
+                      </ul>
+
 
                     <!-- Partials for login/register -->
                     <div class="d-flex align-items-center ms-lg-3">

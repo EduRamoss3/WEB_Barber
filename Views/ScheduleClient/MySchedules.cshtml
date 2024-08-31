@@ -1,0 +1,76 @@
+﻿@using Barber.UI.Entities.DTO
+@model List<SchedulesDTO>
+
+@{
+    ViewBag.Title = "Meus Agendamentos";
+}
+
+<div class="container my-5">
+    <!-- Cabeçalho com o título -->
+    <div class="text-center mb-4">
+        <h2>Meus Agendamentos</h2>
+        <!-- Ícone do Barbeiro -->
+        <i class="fas fa-user-barber fa-5x text-primary"></i>
+    </div>
+
+    <!-- Cartões de Agendamento -->
+    <div class="row">
+        @foreach (var schedule in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-light">
+                    <div class="card-body">
+                        <h5 class="card-title">@schedule.BarberName</h5>
+                        <p class="card-text"><strong>Serviço:</strong> @schedule.TypeOfService</p>
+                        <p class="card-text"><strong>Data:</strong> @schedule.DateSchedule.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p class="card-text"><strong>Valor:</strong> R$ @schedule.ValueForService</p>
+                        <p class="card-text"><strong>Status:</strong> @(schedule.IsFinalized ? "Finalizado" : "Pendente")</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Adicione o link do FontAwesome para o ícone do barbeiro -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<!-- Estilos Adicionais -->
+<style>
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .card-text {
+        font-size: 1rem;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #007bff;
+        color: #007bff;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .text-secondary {
+        color: #6c757d !important;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+</style>

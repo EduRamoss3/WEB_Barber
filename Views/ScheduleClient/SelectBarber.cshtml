@@ -1,0 +1,94 @@
+﻿@model SelectModel
+@{
+    ViewBag.Title = "Selecionar Barbeiro";
+}
+
+<!-- Page Title -->
+<h2 class="text-center my-4">Selecionar Barbeiro</h2>
+
+<!-- Barber Selection Form -->
+<form asp-action="SelectBarberWithHour" method="get" class="p-4 shadow-lg rounded bg-light">
+
+    <!-- Barber Selection -->
+    <div class="form-group mb-3">
+        <label for="idBarber" class="form-label">Escolha um Barbeiro:</label>
+        <select asp-for="@Model.IdBarber" id="idBarber" name="idBarber" class="form-control" asp-items="@ViewBag.Barbeiros">
+            <option value="">Selecione um Barbeiro</option>
+        </select>
+    </div>
+
+    <!-- Date Selection -->
+    <div class="form-group mb-3">
+        <label for="date" class="form-label">Data:</label>
+        <input asp-for="@Model.Date" type="date" id="date" name="date" class="form-control" required />
+    </div>
+
+    <!-- Service Type Selection -->
+    <div class="form-group mb-3">
+        <label for="typeOfService" class="form-label">Tipo de serviço:</label>
+        <select asp-for="TypeOfService" class="form-select">
+            <option value="1">Normal</option>
+            <option value="2">Degradê</option>
+            <option value="3">Degradê e Barba</option>
+            <option value="4">Barba</option>
+            <option value="5">Coloração</option>
+            <option value="6">Coloração da Barba e Corte normal</option>
+            <option value="7">Coloração geral e Degradê</option>
+            <option value="8">Coloração e CorteNormal</option>
+            <option value="9">Coloração da Barba e Degradê</option>
+            <option value="10">Somente lavagem</option>
+            <option value="11">Depilação</option>
+        </select>
+        <span asp-validation-for="TypeOfService" class="text-danger"></span>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="d-flex justify-content-center">
+        <button type="submit" class="btn btn-primary btn-lg w-50">Próximo</button>
+    </div>
+</form>
+
+<!-- JavaScript for Animations -->
+<script>
+    // Add fade-in effect when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        form.style.opacity = 0;
+        form.style.transition = "opacity 1s ease-in-out";
+        setTimeout(() => form.style.opacity = 1, 200);
+    });
+
+    // Add a focus effect on the input fields
+    const inputs = document.querySelectorAll("input, select");
+    inputs.forEach(input => {
+        input.addEventListener("focus", function () {
+            input.classList.add("shadow-sm", "border-primary");
+        });
+        input.addEventListener("blur", function () {
+            input.classList.remove("shadow-sm", "border-primary");
+        });
+    });
+</script>
+
+<!-- Custom Styles for Better UI -->
+<style>
+    body {
+        background-color: #f8f9fa; /* Light grey background */
+    }
+
+    form {
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .btn-primary {
+        background-color: #343a40;
+        border-color: #343a40;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+        .btn-primary:hover {
+            background-color: #495057;
+            border-color: #495057;
+        }
+</style>

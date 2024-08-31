@@ -1,22 +1,32 @@
 ﻿body {
-    background-color: #f6f6f6;
-    font-family:'Segoe UI Symbol';
+    background-color: #fbfaf1;
+    font-family: 'Source Sans Pro';
 }
 h2,h3 {
     text-transform:uppercase;
 }
-.navbar{
+.navbar {
     height: 12vh;
 }
 .img{
-    width:7vw;
+    width:4vw;
+}
+.footer {
+    background-color: #04586f;
+    color: white;
+}
+.title{
+    color: white;
+    font-size: 20px;
+    font-weight:bolder;
+    font-family:'Source Sans Pro';
+
 }
 .bg-wood h2{
     color: black;
     text-transform:uppercase;
 }
 .bg-wood {
-    color: rgb(203, 203, 203);
     border-radius: 10px;
 }
     .bg-wood p {
@@ -24,11 +34,13 @@ h2,h3 {
         text-align:justify;
     }
 .navbar {
-    background-color: #B88355;
+    background-color: #04586f;
 }
-.footer {
-    background-color: black;
+.btn {
+    background-color: #04586f;
+    color: white;
 }
+
 .nav-link{
     color:aliceblue;
 }
@@ -74,4 +86,7 @@ h2,h3 {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+}
+.groupbtn{
+    margin-left: 25%;
 }

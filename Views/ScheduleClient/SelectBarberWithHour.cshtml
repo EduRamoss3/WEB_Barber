@@ -1,0 +1,82 @@
+﻿@model SelectModel
+@{
+    ViewBag.Title = "Selecionar Horário";
+}
+
+<h2>HORÁRIOS DISPONÍVEIS</h2>
+<style>
+    .horario-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+
+    .horario-card p {
+        margin: 0;
+    }
+
+    .horario-card.expanded {
+        background-color: #e9ecef;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+        transform: scale(1.05);
+    }
+
+    .horario-card:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+@if (ViewBag.Horarios is null)
+{
+    <p class="text-danger">Nenhum horário disponível para a data e barbeiro selecionados.</p>
+}
+else
+{
+    <form asp-action="BookAppointment" method="post">
+        <div class="container">
+            <div class="row">
+                @foreach (var item in ViewBag.Horarios)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card horario-card" data-value="@item.Value">
+                            <div class="card-body">
+                                <p class="card-text">@item.Text</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <input type="hidden" id="selectedHorário" name="InitialDate" />
+        <input type="hidden" asp-for="@Model.TypeOfService" value="@Model.TypeOfService" />
+        <input type="hidden" asp-for="@Model.Date" value="@Model.Date" />
+        <input type="hidden" asp-for="@Model.IdBarber" value="@Model.IdBarber" />
+        <button type="submit" class="btn btn-primary">Agendar</button>
+        <button type="button" onclick="goBack()" class="btn btn-secondary">Voltar</button>
+    </form>
+}
+<script>
+   function goBack() {
+        window.history.back();
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.horario-card');
+        const selectedHorárioInput = document.getElementById('selectedHorário');
+
+        cards.forEach(card => {
+            card.addEventListener('click', function () {
+                // Remove a classe 'expanded' de todos os cartões
+                cards.forEach(c => c.classList.remove('expanded'));
+
+                // Adiciona a classe 'expanded' ao cartão clicado
+                this.classList.add('expanded');
+
+                // Atualiza o valor do campo oculto com o valor do cartão clicado
+                selectedHorárioInput.value = this.getAttribute('data-value');
+            });
+        });
+    });
+</script>

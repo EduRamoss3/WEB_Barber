@@ -4,6 +4,7 @@ using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using NuGet.Common;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 
@@ -96,7 +97,7 @@ namespace Barber.UI.Services
             PutTokenInHeadersAuthorization(token, _client);
             ObjectResponse<List<DateTime>> _objectResponse = new();
 
-            using (var response = await _client.GetAsync(apiEndPoint + $"{idBarber}/disponibleDates"))
+            using (var response = await _client.GetAsync(apiEndPoint + $"{idBarber}/indisponibleDates"))
             {
                 _objectResponse.StatusCode = response.StatusCode;
                 _objectResponse.RequestUri = response.RequestMessage.RequestUri;
@@ -105,12 +106,22 @@ namespace Barber.UI.Services
                 if (response.IsSuccessStatusCode)
                 {
                     var apiResponse = await response.Content.ReadAsStreamAsync();
-                    var json = await JsonSerializer.DeserializeAsync<List<DateTime>>(apiResponse);
-                    _objectResponse.OneObject = json;
+
+                    // Deserialize into a list of strings
+                    var dateStrings = await JsonSerializer.DeserializeAsync<List<string>>(apiResponse);
+
+                    // Convert strings to DateTime using a specific format
+                    var dateTimes = dateStrings.Select(dateString =>
+                        DateTime.ParseExact(dateString, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture))
+                        .ToList();
+
+                    _objectResponse.OneObject = dateTimes;
                 }
+
                 return _objectResponse;
             }
         }
+
 
         public async Task<ObjectResponse<BarberDTO>> RemoveByIdAsync(int id, string token)
         {

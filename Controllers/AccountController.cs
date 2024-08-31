@@ -2,6 +2,7 @@
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
+using System.Net.Sockets;
 using System.Text.Json;
 
 namespace Barber.UI.Controllers
@@ -29,33 +30,47 @@ namespace Barber.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
-                return View(model);
-            }
-            var result = await _authenticate.Authenticates(model);
-            if (result is not null)
-            {
-                Response.Cookies.Append("X-Access-Token", result.Token, new CookieOptions()
+                if (!ModelState.IsValid)
                 {
-                    Secure = true,
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = result.Expiration,
-                });
+                    ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
+                    return View(model);
+                }
+                var result = await _authenticate.Authenticates(model);
+                if (result is not null)
+                {
+                    Response.Cookies.Append("X-Access-Token", result.Token, new CookieOptions()
+                    {
+                        Secure = true,
+                        HttpOnly = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = result.Expiration,
+                    });
 
-                
-                HttpContext.Session.SetString("Email", model.Email);
-                HttpContext.Session.SetString("Logged", "true");
-                HttpContext.Session.SetString("Role", result.Role);
 
-                return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetString("Email", model.Email);
+                    HttpContext.Session.SetString("Logged", "true");
+                    HttpContext.Session.SetString("Role", result.Role);
+
+                    return RedirectToAction("Index", "Home");
+                }
+
+                ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
+                HttpContext.Session.SetString("Logged", "false");
+                return View();
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("Request", "Erro de comunicação, por favor, contate o suporte.");
+                return View();
+            }
+            catch (SocketException)
+            {
+                ModelState.AddModelError("Request", "Erro de comunicação, por favor, contate o suporte.");
+                return View();
             }
 
-            ModelState.AddModelError(string.Empty, "Falha ao fazer login. Verifique suas credenciais.");
-            HttpContext.Session.SetString("Logged", "false");
-            return View();
         }
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -79,21 +94,35 @@ namespace Barber.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                ModelState.AddModelError("Registro", "Verifique todos os campos e tente novamente!");
+                if (!ModelState.IsValid)
+                {
+                    ModelState.AddModelError("Registro", "Verifique todos os campos e tente novamente!");
+                    return View();
+                }
+                var result = await _authenticate.Register(model);
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ViewBag.Error = result.Content.ReadAsStringAsync();
+                    return View(ViewBag.Error);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("Request", "Erro de comunicação, por favor, contate o suporte.");
                 return View();
             }
-            var result = await _authenticate.Register(model);
-            if (result.IsSuccessStatusCode)
+            catch (SocketException)
             {
-                return RedirectToAction("Index", "Home");
+                ModelState.AddModelError("Request", "Erro de comunicação, por favor, contate o suporte.");
+                return View();
             }
-            else
-            {
-                ViewBag.Error = result.Content.ReadAsStringAsync();
-                return View(ViewBag.Error);
-            }
+           
         }
     }
 }

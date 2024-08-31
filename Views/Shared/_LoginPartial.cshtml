@@ -15,18 +15,21 @@
         list-style: none;
     }
 </style>
-@if(session is not null)
+@if (session is not null)
 {
     @if (session.Equals("true"))
     {
-
-        <li class="nav-item text-light">
-            <form asp-controller="Account" asp-action="Logout" method="post">
-                <button type="submit" class="nav-link btn btn-link text-light p-0">Logout</button>
+        <li class="nav-item d-flex flex-column align-items-center">
+            <img src="~/Images/do-utilizador.png" width="25px" alt="User Icon" style="margin-bottom: 2px;" />
+            <form class="nav-link text-light" asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit" class="btn btn-link text-light p-0">Logout</button>
             </form>
         </li>
-       
-    } 
+        <li class="nav-item d-flex flex-column align-items-center">
+            <img src="~/Images/agendar.png" width="25px" alt="Schedule Icon" />
+            <a class="nav-link text-light mt-1" asp-controller="ScheduleClient" asp-action="MySchedules">Meus Agendamentos</a>
+        </li>
+    }
 }
 else
 {

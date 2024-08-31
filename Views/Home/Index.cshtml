@@ -6,12 +6,12 @@
     <!-- Hero Section -->
     <div class="row align-items-center">
         <div class="col-md-6 text-center text-md-start">
-            <h1 class="display-4 fw-bold">Bem-vindo à Barbearia Estilo</h1>
+            <h1 class="display-4 fw-bold">Bem-vindo à Barber Shop</h1>
             <p class="lead mt-4">Onde tradição e modernidade se encontram para oferecer a melhor experiência em cuidados masculinos.</p>
-            <a href="@Url.Action("BookAppointment", "ScheduleClient")" class="btn btn-lg mt-3">Agende seu horário</a>
+            <a href="@Url.Action("BookAppointment", "ScheduleClient")" class="btn btn-secondary">Agende seu horário</a>
         </div>
         <div class="col-md-6 text-center">
-            <img class="w-50" src="~/Images/iconebarbacom.png" alt="Barbearia Estilo" class="img-fluid rounded shadow-lg">
+            <img class="w-75" src="~/Images/barbericon2.png" alt="Barbearia Estilo" class="img-fluid rounded shadow-lg">
         </div>
     </div>
 
@@ -19,7 +19,7 @@
     <div class="row mt-5 bg-wood">
         <div class="col-md-12 text-center">
             <h2 class="fw-bold">Sobre Nós</h2>
-            <p class="lead mt-3">A Barbearia Estilo é mais do que apenas um corte de cabelo. Somos um espaço onde você pode relaxar, se cuidar e sair sentindo-se renovado. Oferecemos uma variedade de serviços, desde o tradicional corte de cabelo até barba, coloração e tratamentos capilares.</p>
+            <p class="lead mt-3">A Barber Shop é mais do que apenas um corte de cabelo. Somos um espaço onde você pode relaxar, se cuidar e sair sentindo-se renovado. Oferecemos uma variedade de serviços, desde o tradicional corte de cabelo até barba, coloração e tratamentos capilares.</p>
         </div>
     </div>
 
@@ -29,26 +29,26 @@
             <h2 class="fw-bold">Nossos Serviços</h2>
         </div>
         <div class="col-lg-4 col-md-6 mt-4">
-            <div class="card h-100 border-0 shadow">
-                <img src="~/Images/barber_hero.png" class="card-img-top" alt="Corte de Cabelo" style="object-fit: cover; height: 250px;">
+            <div class="card h-100 border-0 shadow" style="border-radius: 50px;">
+                <img src="~/Images/penteado1.png" class="card-img-top" alt="Corte de Cabelo" style="object-fit: contain; height: 250px;">
                 <div class="card-body">
                     <h5 class="card-title">Corte de Cabelo</h5>
                     <p class="card-text">Experimente o melhor corte de cabelo, feito pelos nossos profissionais altamente qualificados.</p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6 mt-4">
-            <div class="card h-100 border-0 shadow">
-                <img src="~/Images/barba1.png" class="card-img-top" alt="Barba" style="object-fit: cover; height: 250px;">
-                <div class="card-body">
+        <div class="col-lg-4 col-md-6 mt-4" >
+            <div class="card h-100 border-0 shadow" style="border-radius: 50px;">
+                <img src="~/Images/barbaicon.png" class="card-img-top" alt="Barba" style="object-fit: contain; height: 250px;">
+                <div class="card-body" style="border-radius: 120px;">
                     <h5 class="card-title">Barba</h5>
                     <p class="card-text">Desde o alinhamento até o estilo completo, deixe sua barba impecável.</p>
                 </div>
             </div>
         </div>
         <div class="col-lg-4 col-md-6 mt-4">
-            <div class="card h-100 border-0 shadow">
-                <img src="~/Images/cabeloplatinado.jpg" class="card-img-top" alt="Coloração" style="object-fit: cover; height: 250px;">
+            <div class="card h-100 border-0 shadow" style="border-radius: 50px;">
+                <img src="~/Images/penteado.png" class="card-img-top" alt="Coloração" style="object-fit: contain; height: 250px;">
                 <div class="card-body">
                     <h5 class="card-title">Coloração</h5>
                     <p class="card-text">Atualize seu visual com nossas opções de coloração e tratamentos capilares.</p>
@@ -59,28 +59,44 @@
 
 
     <!-- Testimonials Section -->
-    <div class="row mt-5">
-        <div class="col-md-12 text-center">
-            <h2 class="fw-bold">Depoimentos</h2>
-            <p class="lead mt-3">Veja o que nossos clientes têm a dizer:</p>
+    <div class="container mt-5">
+        <div class="row text-center mb-5">
+            <div class="col-md-12">
+                <h2 class="fw-bold mb-3">Depoimentos</h2>
+                <p class="lead">Veja o que nossos clientes têm a dizer:</p>
+            </div>
         </div>
-        <div class="col-md-4 mt-4">
-            <blockquote class="blockquote text-center">
-                <p class="mb-0">"A melhor barbearia da cidade! Sempre saio satisfeito com o atendimento e o corte."</p>
-                <footer class="blockquote-footer mt-1">João Silva</footer>
-            </blockquote>
-        </div>
-        <div class="col-md-4 mt-4">
-            <blockquote class="blockquote text-center">
-                <p class="mb-0">"Serviço de primeira qualidade, recomendo a todos meus amigos."</p>
-                <footer class="blockquote-footer mt-1">Carlos Oliveira</footer>
-            </blockquote>
-        </div>
-        <div class="col-md-4 mt-4">
-            <blockquote class="blockquote text-center">
-                <p class="mb-0">"Ambiente agradável e profissionais qualificados. Adorei a experiência!"</p>
-                <footer class="blockquote-footer mt-1">Marcos Santos</footer>
-            </blockquote>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>"A melhor barbearia da cidade! Sempre saio satisfeito com o atendimento e o corte."</p>
+                            <footer class="blockquote-footer">João Silva</footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>"Serviço de primeira qualidade, recomendo a todos meus amigos."</p>
+                            <footer class="blockquote-footer">Carlos Oliveira</footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-light">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>"Ambiente agradável e profissionais qualificados. Adorei a experiência!"</p>
+                            <footer class="blockquote-footer">Marcos Santos</footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -89,7 +105,7 @@
         <div class="col-md-12 text-center">
             <h2 class="fw-bold">Agende Agora</h2>
             <p class="lead mt-3">Garanta seu horário e tenha a melhor experiência em nossa barbearia.</p>
-            <a href="@Url.Action("BookAppointment", "ScheduleClient")" class="btn btn-lg btn-outline-primary">Agendar Horário</a>
+            <a asp-controller="ScheduleClient" asp-action="SelectBarber" class="btn btn-lg btn-outline-primary">Agendar Horário</a>
         </div>
     </div>
 </div>
