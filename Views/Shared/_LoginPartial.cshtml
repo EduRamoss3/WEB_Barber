@@ -20,14 +20,17 @@
     @if (session.Equals("true"))
     {
         <li class="nav-item d-flex flex-column align-items-center">
-            <img src="~/Images/do-utilizador.png" width="25px" alt="User Icon" style="margin-bottom: 2px;" />
-            <form class="nav-link text-light" asp-controller="Account" asp-action="Logout" method="post">
-                <button type="submit" class="btn btn-link text-light p-0">Logout</button>
+            <form class="nav-link text-light d-flex flex-column align-items-center p-0" asp-controller="Account" asp-action="Logout" method="post">
+                <img src="~/Images/do-utilizador.png" width="25px" alt="User Icon" style="margin-bottom: 2px;" />
+                <button type="submit" class="btn btn-link text-light p-0" style="background-color: transparent;">Logout</button>
             </form>
         </li>
+
         <li class="nav-item d-flex flex-column align-items-center">
-            <img src="~/Images/agendar.png" width="25px" alt="Schedule Icon" />
-            <a class="nav-link text-light mt-1" asp-controller="ScheduleClient" asp-action="MySchedules">Meus Agendamentos</a>
+            <a class="nav-link text-light d-flex flex-column align-items-center" asp-controller="ScheduleClient" asp-action="MySchedules">
+                <img src="~/Images/agendar.png" width="25px" alt="Schedule Icon" />
+                Meus Agendamentos
+            </a>
         </li>
     }
 }

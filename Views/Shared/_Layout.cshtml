@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Barber.UI</title>
+    <title>@ViewData["Title"] - Barbearia</title>
+    <link rel="icon" href="~/Images/dsd.png" type="image/x-icon" />
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/StyleSheet.css" asp-append-version="true" />
@@ -17,55 +19,64 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <!-- Branding -->
-                <a class="navbar-brand text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
-                    <span class="title">BARBER SHOP</span>
-                </a>
+                <!-- Wrapper with Bootstrap container for centralization -->
+                <div class="container">
+                    <!-- Navbar principal layout com flex -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <!-- Branding -->
+                        <a class="navbar-brand text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+                            <span class="title">BARBER SHOPGER</span>
+                        </a>
 
-                <!-- Toggler for mobile view -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Navbar links and partials -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Centered Navbar Links -->
-                    <ul class="navbar-nav mx-auto">
-                      <li class="nav-item d-flex flex-column align-items-center">
-                         <img src="~/Images/casa.png" width="25px" alt="Home Icon" />
-                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                      </li>
-                      <li class="nav-item d-flex flex-column align-items-center">
-                         <img src="~/Images/sobre.png" width="25px" alt="sobre" />
-                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Sobre">Sobre</a>
-                      </li>
-                      <li class="nav-item d-flex flex-column align-items-center">
-                         <img src="~/Images/contato.png" width="25px" alt="contato" />
-                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Contato">Contato</a>
-                      </li>
-                      <li class="nav-item d-flex flex-column align-items-center">
-                         <img src="~/Images/mais.png" width="25px" alt="contato" />
-                         <a class="nav-link mt-1" asp-area="" asp-controller="Home" asp-action="Mais">Mais</a>
-                      </li>
-                        @if (_httpContextAccessor.HttpContext.Session.GetString("Role") is not null)
-                        {
-                            @if (_httpContextAccessor.HttpContext.Session.GetString("Role").Equals("Admin"))
-                            {
+                        <!-- Centralized Navbar Links -->
+                        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                            <ul class="navbar-nav">
                                 <li class="nav-item d-flex flex-column align-items-center">
-                                  <img src="~/Images/engrenagem.png" width="25px" alt="Admin Icon" />
-                                   <a class="nav-link mt-1" asp-area="Admin" asp-controller="Schedule" asp-action="Index">Área Admin</a>
+                                    <a class="nav-link mt-1 d-flex flex-column align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                                        <img src="~/Images/casa.png" width="25px" alt="Home Icon" />
+                                        Home
+                                    </a>
                                 </li>
-                            }
-                        }
-                      </ul>
+                                <li class="nav-item d-flex flex-column align-items-center">
+                                    <a class="nav-link mt-1 d-flex flex-column align-items-center" asp-area="" asp-controller="Home" asp-action="Sobre">
+                                        <img src="~/Images/sobre.png" width="25px" alt="Sobre Icon" />
+                                        Sobre
+                                    </a>
+                                </li>
+                                <li class="nav-item d-flex flex-column align-items-center">
+                                    <a class="nav-link mt-1 d-flex flex-column align-items-center" asp-area="" asp-controller="Home" asp-action="Contato">
+                                        <img src="~/Images/contato.png" width="25px" alt="Contato Icon" />
+                                        Contato
+                                    </a>
+                                </li>
+                                <li class="nav-item d-flex flex-column align-items-center">
+                                    <a class="nav-link mt-1 d-flex flex-column align-items-center" asp-area="" asp-controller="Home" asp-action="Mais">
+                                        <img src="~/Images/mais.png" width="25px" alt="Mais Icon" />
+                                        Mais
+                                    </a>
+                                </li>
+                                @if (_httpContextAccessor.HttpContext.Session.GetString("Role") is not null)
+                                {
+                                    @if (_httpContextAccessor.HttpContext.Session.GetString("Role").Equals("Admin"))
+                                    {
+                                        <li class="nav-item d-flex flex-column align-items-center">
+                                            <a class="nav-link mt-1 d-flex flex-column align-items-center" asp-area="Admin" asp-controller="Schedule" asp-action="Index">
+                                                <img src="~/Images/engrenagem.png" width="25px" alt="Admin Icon" />
+                                                Área Admin
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
 
-
-                    <!-- Partials for login/register -->
-                    <div class="d-flex align-items-center ms-lg-3">
-                        @await Html.PartialAsync("_LoginPartial")
-                        @await Html.PartialAsync("_RegisterPartial")
+                        <!-- Partials for login/register -->
+                        <div class="d-flex align-items-center">
+                            @await Html.PartialAsync("_LoginPartial")
+                            @await Html.PartialAsync("_RegisterPartial")
+                        </div>
                     </div>
-                </div>
+                </div> <!-- End of container -->
             </div>
         </nav>
     </header>

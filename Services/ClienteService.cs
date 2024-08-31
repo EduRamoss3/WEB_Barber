@@ -129,7 +129,7 @@ namespace Barber.UI.Services
         {
             PutTokenInHeadersAuthorization(token, client);
 
-            var json = JsonSerializer.Serialize(clientDTO);
+            var json = JsonSerializer.Serialize(clientDTO,_options);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             
             using(var response = await client.PutAsync(apiEndPoint + id, content))

@@ -42,7 +42,7 @@
             </dl>
         </div>
         <div class="card-footer text-center">
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+            <a asp-area="Admin" asp-action="Edit" asp-route-idBarber="@Model.Id" class="btn btn-warning">Editar</a>
             <a asp-area="Admin" asp-controller="BarberAdmin" asp-action="DeleteInformation" asp-route-id="@Model.Id" class="btn btn-secondary">Excluir</a>
             <a asp-action="Barbers" class="btn btn-secondary">Voltar</a>
         </div>

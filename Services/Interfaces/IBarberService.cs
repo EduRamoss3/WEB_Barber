@@ -2,6 +2,7 @@
 using Barber.UI.Entities.Register;
 using Barber.UI.Entities.Responses;
 using Barber.UI.Models;
+using System.Net;
 
 namespace Barber.UI.Services.Interfaces
 {
@@ -18,5 +19,7 @@ namespace Barber.UI.Services.Interfaces
         Task<ObjectResponse<BarberDTO>> GetById(int id, string token);
 
         Task<ObjectResponse<List<DateTime>>> GetIndisponibleDateAsync(int idBarber, string token);
+
+        Task<HttpStatusCode> UpdateAsync(BarberDTO barberDTO, int id, string token);
     }
 }

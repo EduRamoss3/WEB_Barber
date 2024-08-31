@@ -6,11 +6,11 @@ namespace Barber.UI.Entities.DTO
     {
         [Key]
         public int Id { get; init; }
-        [Required(ErrorMessage = "Name is required!")]
-        [StringLength(200, ErrorMessage = "Max 200 characters")]
+        [Required(ErrorMessage = "O nome é obrigatório!")]
+        [StringLength(200, ErrorMessage = "Max 200 caracteres")]
         public string Name { get; init; }
 
-        [Required(ErrorMessage = "Set one disponibility!")]
+        [Required(ErrorMessage = "Coloque uma disponibilidade!")]
         public bool Disponibility { get; init; }
 
         public List<SchedulesDTO> Schedules { get; init; } = new List<SchedulesDTO>();

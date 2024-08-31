@@ -9,31 +9,31 @@ namespace Barber.UI.Entities.DTO
         [Key]
         public int Id { get; init; }
 
-        [Required(ErrorMessage = "ID Barber is required!")]
+        [Required(ErrorMessage = "ID Barber é obrigatório!")]
         [DisplayName("Barbeiro")]
         public int IdBarber { get; init; }
 
-        [Required(ErrorMessage = "ID Client is required!")]
+        [Required(ErrorMessage = "ID Client é obrigatório!")]
         [DisplayName("Cliente")]
         public int IdClient { get; set; }
 
         [DisplayName("Serviço")]
-        [Required(ErrorMessage = "Type of service is required!")]
+        [Required(ErrorMessage = "O tipo de serviço é obrigatório!")]
         public TypeOfService TypeOfService { get; init; }
 
-        [Required(ErrorMessage = "Date to schedule is required!")]
+        [Required(ErrorMessage = "A data é obrigatória!")]
         [DisplayName("Data")]
         public DateTime DateSchedule { get; init; }
 
-        [Required(ErrorMessage = "The value for service is required!")]
+        [Required(ErrorMessage = "O valor de serviço é obrigatório!")]
         [DisplayName("Valor")]
         public decimal ValueForService { get; init; }
 
-        [Required(ErrorMessage = "Finalized is required")]
+        [Required(ErrorMessage = "Se foi finalizado ou não é obrigatório!")]
         [DisplayName("Finalizado?")]
         public bool IsFinalized { get; init; }
 
-        [DisplayName("Nome")]
+        [DisplayName("Cliente")]
         public string ClientName { get; set; }
 
         [DisplayName("Barbeiro")]

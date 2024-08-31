@@ -1,4 +1,5 @@
-﻿using Barber.UI.Entities.Register;
+﻿using Barber.UI.Entities.DTO;
+using Barber.UI.Entities.Register;
 using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -79,7 +80,7 @@ namespace Barber.UI.Areas.Admin.Controllers
             {
                 var result = await _barberService.GetById(idBarber, TokenJwt());
                 var apiResponse = HandleUnauthorizedOrForbidden(result.StatusCode);
-                if(apiResponse != null) { return apiResponse; }
+                if (apiResponse != null) { return apiResponse; }
                 if (result.StatusCode == HttpStatusCode.OK)
                 {
                     return View("GetById", result);
@@ -143,29 +144,35 @@ namespace Barber.UI.Areas.Admin.Controllers
                 return View("Error");
             }
         }
-        //[HttpGet]
-        //public async Task<IActionResult> (int id)
-        //{
+        [HttpGet]
+        public async Task<IActionResult> Edit(int idBarber)
+        {
+            var apiResponse = await _barberService.GetById(idBarber, TokenJwt());
+            if(apiResponse.OneObject is null)
+            {
+                TempData["Erro"] = "Erro ao localizar barbeiro";
+                return View("Error");
+            }
+            return View(apiResponse.OneObject);
+        }
+        [HttpPost]
+        public async Task<ActionResult<BarberDTO>> Edit(BarberDTO barberDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var apiResponse = await _barberService.UpdateAsync(barberDTO, barberDTO.Id, TokenJwt());
+                if (apiResponse.Equals(HttpStatusCode.OK) || apiResponse.Equals(HttpStatusCode.Created))
+                {
+                    TempData["Success"] = "Barbeiro atualizado com sucesso!";
+                    return RedirectToAction("Index");
+                }
+                TempData["Erro"] = "Erro na requisição";
+                return View("Error");
 
-        //}
-        //[HttpPost]
-        //public async Task<ActionResult<BarberDTO>> Edit(BarberDTO barberDTO)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var apiResponse = await _barberService.UpdateAsync(barberDTO, barberDTO.Id, TokenJwt());
-        //        if (apiResponse.Equals(HttpStatusCode.OK) || apiResponse.Equals(HttpStatusCode.Created))
-        //        {
-        //            TempData["Success"] = "Agendamento atualizado com sucesso!";
-        //            return RedirectToAction("Index");
-        //        }
-        //        TempData["Erro"] = "Erro na requisição";
-        //        return View("Error");
-
-        //    }
-        //    ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
-        //    return View(barberDTO);
-        //}
+            }
+            ModelState.AddModelError("Erro", "Verifique todos os campos e tente novamente");
+            return View(barberDTO);
+        }
 
         public async Task<IActionResult> Details(int id)
         {

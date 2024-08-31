@@ -24,7 +24,7 @@
                         <p class="card-text"><strong>Serviço:</strong> @schedule.TypeOfService</p>
                         <p class="card-text"><strong>Data:</strong> @schedule.DateSchedule.ToString("dd/MM/yyyy HH:mm")</p>
                         <p class="card-text"><strong>Valor:</strong> R$ @schedule.ValueForService</p>
-                        <p class="card-text"><strong>Status:</strong> @(schedule.IsFinalized ? "Finalizado" : "Pendente")</p>
+                        <p class="card-text"><strong>Status:</strong> @(schedule.IsFinalized ? "Finalizado" : "Não finalizado")</p>
                     </div>
                 </div>
             </div>
@@ -32,6 +32,21 @@
     </div>
 </div>
 
+<!-- Centralize o grupo de botões com classes Bootstrap -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group" role="group" aria-label="Pagination">
+                    <button type="button" class="btn btn-primary">1</button>
+                    <button type="button" class="btn btn-primary">2</button>
+                    <button type="button" class="btn btn-primary">3</button>
+                    <button type="button" class="btn btn-primary">4</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Adicione o link do FontAwesome para o ícone do barbeiro -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 

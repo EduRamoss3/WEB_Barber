@@ -5,6 +5,7 @@ using Barber.UI.Models;
 using Barber.UI.Services.Interfaces;
 using NuGet.Common;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 
@@ -152,6 +153,18 @@ namespace Barber.UI.Services
                 _objectResponse.Message = response.ReasonPhrase;
             }
             return _objectResponse;
+        }
+
+        public async Task<HttpStatusCode> UpdateAsync(BarberDTO barberDTO, int id, string token)
+        {
+            PutTokenInHeadersAuthorization(token, _client);
+            var json = JsonSerializer.Serialize(barberDTO, _options);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using(var response = await _client.PutAsync(apiEndPoint + id, content))
+            {
+                return response.StatusCode;
+            }
         }
     }
 }

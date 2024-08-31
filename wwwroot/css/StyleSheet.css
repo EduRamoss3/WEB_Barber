@@ -11,10 +11,7 @@ h2,h3 {
 .img{
     width:4vw;
 }
-.footer {
-    background-color: #04586f;
-    color: white;
-}
+
 .title{
     color: white;
     font-size: 20px;
@@ -33,12 +30,24 @@ h2,h3 {
         text-shadow: 1px 1px 0px 1px white;
         text-align:justify;
     }
-.navbar {
-    background-color: #04586f;
+.navbar, .footer {
+    background-color: #441e13;
+    color: white;
 }
 .btn {
-    background-color: #04586f;
+    background-color: #f5ce6d;
+    border-color: white;
     color: white;
+}
+.btn:hover {
+    background-color: #febf21;
+}
+.nav-link:hover{
+    color: wheat;
+}
+a img:hover{
+    transition: 0.2s ease-in-out;
+    width: 30px;   
 }
 
 .nav-link{
